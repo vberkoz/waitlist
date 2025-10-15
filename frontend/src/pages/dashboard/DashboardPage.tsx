@@ -1,76 +1,56 @@
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
-
-const formSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  phone: z.string().min(10, 'Phone must be at least 10 characters'),
-  message: z.string().min(10, 'Message must be at least 10 characters')
-})
-
-type FormData = z.infer<typeof formSchema>
+import { Link } from 'react-router-dom'
 
 export default function DashboardPage() {
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
-    resolver: zodResolver(formSchema)
-  })
+  const stats = [
+    { label: 'Subs', value: '1,234' },
+    { label: 'Active', value: '567' },
+    { label: 'Rate', value: '89%' },
+    { label: 'Today', value: '45' }
+  ]
 
-  const onSubmit = (data: FormData) => {
-    console.log(data)
-    reset()
-  }
+  const waitlists = [
+    { name: 'Product Launch 2024', subscribers: 234 },
+    { name: 'Beta Program', subscribers: 89 }
+  ]
 
   return (
     <div className="space-y-6">
-      <h1 className="text-4xl font-bold text-neutral-900">Dashboard</h1>
-      
-      <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-8 rounded-lg shadow-sm border border-neutral-200 space-y-6 max-w-2xl">
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">Name</label>
-          <input
-            {...register('name')}
-            className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          />
-          {errors.name && <p className="text-error-500 text-sm mt-1">{errors.name.message}</p>}
+      <div className="bg-white p-8 rounded-lg shadow-sm border border-neutral-200">
+        <h2 className="text-xl font-bold text-neutral-900 mb-6">Quick Stats</h2>
+        <div className="grid grid-cols-4 gap-4">
+          {stats.map((stat) => (
+            <div key={stat.label} className="bg-neutral-50 p-6 rounded-lg text-center">
+              <div className="text-3xl font-bold text-neutral-900">{stat.value}</div>
+              <div className="text-sm text-neutral-600 mt-1">{stat.label}</div>
+            </div>
+          ))}
         </div>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">Email</label>
-          <input
-            {...register('email')}
-            type="email"
-            className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          />
-          {errors.email && <p className="text-error-500 text-sm mt-1">{errors.email.message}</p>}
+      <div className="bg-white p-8 rounded-lg shadow-sm border border-neutral-200">
+        <h2 className="text-xl font-bold text-neutral-900 mb-6">Recent Waitlists</h2>
+        <div className="space-y-4">
+          {waitlists.map((waitlist) => (
+            <div key={waitlist.name} className="bg-neutral-50 p-6 rounded-lg flex justify-between items-center">
+              <div>
+                <div className="font-medium text-neutral-900">{waitlist.name}</div>
+                <div className="text-sm text-neutral-600">{waitlist.subscribers} subscribers</div>
+              </div>
+              <div className="flex gap-2">
+                <button className="px-4 py-2 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-100">View</button>
+                <button className="px-4 py-2 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-100">Edit</button>
+              </div>
+            </div>
+          ))}
         </div>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">Phone</label>
-          <input
-            {...register('phone')}
-            className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          />
-          {errors.phone && <p className="text-error-500 text-sm mt-1">{errors.phone.message}</p>}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-2">Message</label>
-          <textarea
-            {...register('message')}
-            rows={4}
-            className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          />
-          {errors.message && <p className="text-error-500 text-sm mt-1">{errors.message.message}</p>}
-        </div>
-
-        <button
-          type="submit"
-          className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium"
-        >
-          Submit
-        </button>
-      </form>
+      <Link
+        to="/waitlists/create"
+        className="inline-block bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium"
+      >
+        + Create New Waitlist
+      </Link>
     </div>
   )
 }

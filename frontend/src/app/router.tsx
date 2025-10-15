@@ -3,6 +3,10 @@ import Layout from '@/components/layout/Layout'
 import DashboardPage from '@/pages/dashboard/DashboardPage'
 import WaitlistsPage from '@/pages/waitlists/WaitlistsPage'
 import SubscribersPage from '@/pages/subscribers/SubscribersPage'
+import WaitlistPreviewPage from '@/pages/waitlists/WaitlistPreviewPage'
+import CreateWaitlistPage from '@/pages/waitlists/CreateWaitlistPage'
+import PreviewPublishPage from '@/pages/waitlists/PreviewPublishPage'
+import SettingsPage from '@/pages/settings/SettingsPage'
 
 export const router = createBrowserRouter([
   {
@@ -11,7 +15,10 @@ export const router = createBrowserRouter([
     children: [
       { path: '/', element: <DashboardPage /> },
       { path: '/waitlists', element: <WaitlistsPage /> },
-      { path: '/subscribers', element: <SubscribersPage /> }
+      { path: '/waitlists/create', element: <CreateWaitlistPage /> },
+      { path: '/waitlists/preview', element: <PreviewPublishPage /> },
+      { path: '/subscribers', element: <SubscribersPage /> },
+      { path: '/settings', element: <SettingsPage /> }
     ]
   }
 ])
