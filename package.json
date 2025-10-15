@@ -2,28 +2,16 @@
   "name": "waitlist",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend",
+    "infrastructure",
+    "shared"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@hookform/resolvers": "^5.2.2",
-    "@tailwindcss/vite": "^4.1.14",
-    "@tanstack/react-query": "^5.90.3",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-hook-form": "^7.65.0",
-    "react-router-dom": "^7.9.4",
-    "tailwindcss": "^4.1.14",
-    "zod": "^4.1.12"
-  },
-  "devDependencies": {
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.4",
-    "typescript": "~5.6.2",
-    "vite": "^6.0.1"
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspaces",
+    "frontend:dev": "npm run dev --workspace=frontend",
+    "frontend:build": "npm run build --workspace=frontend"
   }
 }
