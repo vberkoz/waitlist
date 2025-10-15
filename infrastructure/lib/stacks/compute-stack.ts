@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
 import * as s3 from 'aws-cdk-lib/aws-s3'
+import * as iam from 'aws-cdk-lib/aws-iam'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { Construct } from 'constructs'
 import * as path from 'path'
@@ -61,14 +62,52 @@ export class ComputeStack extends cdk.Stack {
       })
     }
 
-    props.table.grantReadWriteData(this.functions.createWaitlist)
-    props.table.grantReadData(this.functions.listWaitlists)
-    props.table.grantReadWriteData(this.functions.createSubscriber)
-    props.table.grantReadData(this.functions.listSubscribers)
+    this.functions.createWaitlist.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:PutItem', 'dynamodb:GetItem'],
+      resources: [props.table.tableArn]
+    }))
 
-    props.assetsBucket.grantReadWrite(this.functions.createWaitlist)
-    props.assetsBucket.grantRead(this.functions.listWaitlists)
-    props.assetsBucket.grantReadWrite(this.functions.createSubscriber)
-    props.assetsBucket.grantRead(this.functions.listSubscribers)
+    this.functions.listWaitlists.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:Query', 'dynamodb:Scan'],
+      resources: [props.table.tableArn, `${props.table.tableArn}/index/*`]
+    }))
+
+    this.functions.createSubscriber.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:PutItem', 'dynamodb:GetItem', 'dynamodb:UpdateItem'],
+      resources: [props.table.tableArn]
+    }))
+
+    this.functions.listSubscribers.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:Query', 'dynamodb:Scan'],
+      resources: [props.table.tableArn, `${props.table.tableArn}/index/*`]
+    }))
+
+    this.functions.createWaitlist.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['s3:PutObject', 's3:PutObjectAcl'],
+      resources: [`${props.assetsBucket.bucketArn}/*`]
+    }))
+
+    this.functions.listWaitlists.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['s3:GetObject', 's3:ListBucket'],
+      resources: [props.assetsBucket.bucketArn, `${props.assetsBucket.bucketArn}/*`]
+    }))
+
+    this.functions.createSubscriber.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['s3:PutObject', 's3:GetObject'],
+      resources: [`${props.assetsBucket.bucketArn}/exports/*`]
+    }))
+
+    this.functions.listSubscribers.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['s3:GetObject'],
+      resources: [`${props.assetsBucket.bucketArn}/exports/*`]
+    }))
   }
 }
