@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom'
 const formSchema = z.object({
   name: z.string().min(2, 'Project name must be at least 2 characters'),
   description: z.string().min(10, 'Description must be at least 10 characters'),
-  primaryColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid color format'),
-  logo: z.string().optional()
+  primaryColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/i, 'Invalid color format'),
+  logo: z.any().optional()
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -17,6 +17,8 @@ export default function CreateWaitlistPage() {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: 'Product Launch 2024',
+      description: 'Be the first to know when we launch our revolutionary new product. Join our waitlist and get exclusive early access.',
       primaryColor: '#3b82f6'
     }
   })

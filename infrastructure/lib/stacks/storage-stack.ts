@@ -1,11 +1,13 @@
 import * as cdk from 'aws-cdk-lib'
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
 import * as s3 from 'aws-cdk-lib/aws-s3'
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment'
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as route53 from 'aws-cdk-lib/aws-route53'
 import * as targets from 'aws-cdk-lib/aws-route53-targets'
 import * as acm from 'aws-cdk-lib/aws-certificatemanager'
+import * as path from 'path'
 import { Construct } from 'constructs'
 
 export class StorageStack extends cdk.Stack {
@@ -83,6 +85,21 @@ export class StorageStack extends cdk.Stack {
         compress: true,
         cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED
       },
+      defaultRootObject: 'index.html',
+      errorResponses: [
+        {
+          httpStatus: 403,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+          ttl: cdk.Duration.minutes(5)
+        },
+        {
+          httpStatus: 404,
+          responseHttpStatus: 200,
+          responsePagePath: '/index.html',
+          ttl: cdk.Duration.minutes(5)
+        }
+      ],
       domainNames: [fullDomain],
       certificate: certificate,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
@@ -118,6 +135,13 @@ export class StorageStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'CustomDomainName', {
       value: fullDomain,
       description: 'Custom domain name'
+    })
+
+    new s3deploy.BucketDeployment(this, 'FrontendDeployment', {
+      sources: [s3deploy.Source.asset(path.join(__dirname, '../../../frontend/dist'))],
+      destinationBucket: this.buckets.assets,
+      distribution: this.distribution,
+      distributionPaths: ['/*']
     })
   }
 }

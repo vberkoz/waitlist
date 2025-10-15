@@ -1,4 +1,4 @@
-import WaitlistPageTemplate from '@/components/WaitlistPageTemplate'
+import WaitlistPageTemplate from '../../components/WaitlistPageTemplate'
 
 export default function WaitlistPreviewPage() {
   const handleSubmit = async (email: string) => {

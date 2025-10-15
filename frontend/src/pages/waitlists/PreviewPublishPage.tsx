@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import WaitlistPageTemplate from '@/components/WaitlistPageTemplate'
+import WaitlistPageTemplate from '../../components/WaitlistPageTemplate'
 
 export default function PreviewPublishPage() {
   const navigate = useNavigate()
