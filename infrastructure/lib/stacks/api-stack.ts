@@ -20,19 +20,59 @@ export class ApiStack extends cdk.Stack {
 
     this.api = new apigateway.RestApi(this, 'WaitlistApi', {
       restApiName: 'Waitlist API',
+      description: 'Waitlist Management API',
+      deployOptions: {
+        stageName: 'prod',
+        throttlingRateLimit: 100,
+        throttlingBurstLimit: 200,
+        metricsEnabled: true,
+        loggingLevel: apigateway.MethodLoggingLevel.INFO,
+        dataTraceEnabled: true
+      },
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
-        allowMethods: apigateway.Cors.ALL_METHODS
+        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowHeaders: [
+          'Content-Type',
+          'X-Amz-Date',
+          'Authorization',
+          'X-Api-Key',
+          'X-Amz-Security-Token'
+        ],
+        allowCredentials: true,
+        maxAge: cdk.Duration.hours(1)
       }
     })
 
     const waitlists = this.api.root.addResource('waitlists')
-    waitlists.addMethod('POST', new apigateway.LambdaIntegration(props.functions.createWaitlist))
-    waitlists.addMethod('GET', new apigateway.LambdaIntegration(props.functions.listWaitlists))
+    waitlists.addMethod('POST', new apigateway.LambdaIntegration(props.functions.createWaitlist), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '400' },
+        { statusCode: '500' }
+      ]
+    })
+    waitlists.addMethod('GET', new apigateway.LambdaIntegration(props.functions.listWaitlists), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '500' }
+      ]
+    })
 
     const subscribers = this.api.root.addResource('subscribers')
-    subscribers.addMethod('POST', new apigateway.LambdaIntegration(props.functions.createSubscriber))
-    subscribers.addMethod('GET', new apigateway.LambdaIntegration(props.functions.listSubscribers))
+    subscribers.addMethod('POST', new apigateway.LambdaIntegration(props.functions.createSubscriber), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '400' },
+        { statusCode: '500' }
+      ]
+    })
+    subscribers.addMethod('GET', new apigateway.LambdaIntegration(props.functions.listSubscribers), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '500' }
+      ]
+    })
 
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: this.api.url,
