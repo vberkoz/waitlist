@@ -1,14 +1,16 @@
 import * as cdk from 'aws-cdk-lib'
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
 import * as s3 from 'aws-cdk-lib/aws-s3'
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront'
+import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import { Construct } from 'constructs'
 
 export class StorageStack extends cdk.Stack {
   public readonly table: dynamodb.Table
-
   public readonly buckets: {
     assets: s3.Bucket
   }
+  public readonly distribution: cloudfront.Distribution
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
@@ -55,6 +57,19 @@ export class StorageStack extends cdk.Stack {
       })
     }
 
+    this.distribution = new cloudfront.Distribution(this, 'AssetsDistribution', {
+      defaultBehavior: {
+        origin: new origins.S3Origin(this.buckets.assets),
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
+        cachedMethods: cloudfront.CachedMethods.CACHE_GET_HEAD_OPTIONS,
+        compress: true,
+        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED
+      },
+      priceClass: cloudfront.PriceClass.PRICE_CLASS_100,
+      comment: 'Waitlist Assets CDN'
+    })
+
     new cdk.CfnOutput(this, 'AssetsBucketName', {
       value: this.buckets.assets.bucketName,
       description: 'S3 bucket for static assets and exports'
@@ -63,6 +78,16 @@ export class StorageStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'AssetsBucketArn', {
       value: this.buckets.assets.bucketArn,
       description: 'S3 bucket ARN'
+    })
+
+    new cdk.CfnOutput(this, 'CloudFrontDistributionId', {
+      value: this.distribution.distributionId,
+      description: 'CloudFront distribution ID'
+    })
+
+    new cdk.CfnOutput(this, 'CloudFrontDomainName', {
+      value: this.distribution.distributionDomainName,
+      description: 'CloudFront distribution domain name'
     })
   }
 }
