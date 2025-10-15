@@ -1,13 +1,12 @@
 import * as cdk from 'aws-cdk-lib'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { Construct } from 'constructs'
+import * as path from 'path'
 
 interface ComputeStackProps extends cdk.StackProps {
-  tables: {
-    waitlists: dynamodb.Table
-    subscribers: dynamodb.Table
-  }
+  table: dynamodb.Table
 }
 
 export class ComputeStack extends cdk.Stack {
@@ -22,43 +21,43 @@ export class ComputeStack extends cdk.Stack {
     super(scope, id, props)
 
     this.functions = {
-      createWaitlist: new lambda.Function(this, 'CreateWaitlistFunction', {
+      createWaitlist: new NodejsFunction(this, 'CreateWaitlistFunction', {
         runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'index.handler',
-        code: lambda.Code.fromInline('exports.handler = async () => ({ statusCode: 200, body: "OK" })'),
+        entry: path.join(__dirname, '../../../backend/src/functions/waitlists/create.ts'),
+        handler: 'handler',
         environment: {
-          WAITLISTS_TABLE: props.tables.waitlists.tableName
+          TABLE_NAME: props.table.tableName
         }
       }),
-      listWaitlists: new lambda.Function(this, 'ListWaitlistsFunction', {
+      listWaitlists: new NodejsFunction(this, 'ListWaitlistsFunction', {
         runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'index.handler',
-        code: lambda.Code.fromInline('exports.handler = async () => ({ statusCode: 200, body: "OK" })'),
+        entry: path.join(__dirname, '../../../backend/src/functions/waitlists/list.ts'),
+        handler: 'handler',
         environment: {
-          WAITLISTS_TABLE: props.tables.waitlists.tableName
+          TABLE_NAME: props.table.tableName
         }
       }),
-      createSubscriber: new lambda.Function(this, 'CreateSubscriberFunction', {
+      createSubscriber: new NodejsFunction(this, 'CreateSubscriberFunction', {
         runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'index.handler',
-        code: lambda.Code.fromInline('exports.handler = async () => ({ statusCode: 200, body: "OK" })'),
+        entry: path.join(__dirname, '../../../backend/src/functions/subscribers/create.ts'),
+        handler: 'handler',
         environment: {
-          SUBSCRIBERS_TABLE: props.tables.subscribers.tableName
+          TABLE_NAME: props.table.tableName
         }
       }),
-      listSubscribers: new lambda.Function(this, 'ListSubscribersFunction', {
+      listSubscribers: new NodejsFunction(this, 'ListSubscribersFunction', {
         runtime: lambda.Runtime.NODEJS_20_X,
-        handler: 'index.handler',
-        code: lambda.Code.fromInline('exports.handler = async () => ({ statusCode: 200, body: "OK" })'),
+        entry: path.join(__dirname, '../../../backend/src/functions/subscribers/list.ts'),
+        handler: 'handler',
         environment: {
-          SUBSCRIBERS_TABLE: props.tables.subscribers.tableName
+          TABLE_NAME: props.table.tableName
         }
       })
     }
 
-    props.tables.waitlists.grantReadWriteData(this.functions.createWaitlist)
-    props.tables.waitlists.grantReadData(this.functions.listWaitlists)
-    props.tables.subscribers.grantReadWriteData(this.functions.createSubscriber)
-    props.tables.subscribers.grantReadData(this.functions.listSubscribers)
+    props.table.grantReadWriteData(this.functions.createWaitlist)
+    props.table.grantReadData(this.functions.listWaitlists)
+    props.table.grantReadWriteData(this.functions.createSubscriber)
+    props.table.grantReadData(this.functions.listSubscribers)
   }
 }
