@@ -13,7 +13,8 @@ const storageStack = new StorageStack(app, 'WaitlistStorageStack', {
 
 const computeStack = new ComputeStack(app, 'WaitlistComputeStack', {
   env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
-  table: storageStack.table
+  table: storageStack.table,
+  assetsBucket: storageStack.buckets.assets
 })
 
 new ApiStack(app, 'WaitlistApiStack', {

@@ -1,12 +1,14 @@
 import * as cdk from 'aws-cdk-lib'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb'
+import * as s3 from 'aws-cdk-lib/aws-s3'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
 import { Construct } from 'constructs'
 import * as path from 'path'
 
 interface ComputeStackProps extends cdk.StackProps {
   table: dynamodb.Table
+  assetsBucket: s3.Bucket
 }
 
 export class ComputeStack extends cdk.Stack {
@@ -26,7 +28,8 @@ export class ComputeStack extends cdk.Stack {
         entry: path.join(__dirname, '../../../backend/src/functions/waitlists/create.ts'),
         handler: 'handler',
         environment: {
-          TABLE_NAME: props.table.tableName
+          TABLE_NAME: props.table.tableName,
+          ASSETS_BUCKET: props.assetsBucket.bucketName
         }
       }),
       listWaitlists: new NodejsFunction(this, 'ListWaitlistsFunction', {
@@ -34,7 +37,8 @@ export class ComputeStack extends cdk.Stack {
         entry: path.join(__dirname, '../../../backend/src/functions/waitlists/list.ts'),
         handler: 'handler',
         environment: {
-          TABLE_NAME: props.table.tableName
+          TABLE_NAME: props.table.tableName,
+          ASSETS_BUCKET: props.assetsBucket.bucketName
         }
       }),
       createSubscriber: new NodejsFunction(this, 'CreateSubscriberFunction', {
@@ -42,7 +46,8 @@ export class ComputeStack extends cdk.Stack {
         entry: path.join(__dirname, '../../../backend/src/functions/subscribers/create.ts'),
         handler: 'handler',
         environment: {
-          TABLE_NAME: props.table.tableName
+          TABLE_NAME: props.table.tableName,
+          ASSETS_BUCKET: props.assetsBucket.bucketName
         }
       }),
       listSubscribers: new NodejsFunction(this, 'ListSubscribersFunction', {
@@ -50,7 +55,8 @@ export class ComputeStack extends cdk.Stack {
         entry: path.join(__dirname, '../../../backend/src/functions/subscribers/list.ts'),
         handler: 'handler',
         environment: {
-          TABLE_NAME: props.table.tableName
+          TABLE_NAME: props.table.tableName,
+          ASSETS_BUCKET: props.assetsBucket.bucketName
         }
       })
     }
@@ -59,5 +65,10 @@ export class ComputeStack extends cdk.Stack {
     props.table.grantReadData(this.functions.listWaitlists)
     props.table.grantReadWriteData(this.functions.createSubscriber)
     props.table.grantReadData(this.functions.listSubscribers)
+
+    props.assetsBucket.grantReadWrite(this.functions.createWaitlist)
+    props.assetsBucket.grantRead(this.functions.listWaitlists)
+    props.assetsBucket.grantReadWrite(this.functions.createSubscriber)
+    props.assetsBucket.grantRead(this.functions.listSubscribers)
   }
 }
