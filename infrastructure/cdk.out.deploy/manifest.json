@@ -1,0 +1,1262 @@
+{
+  "version": "48.0.0",
+  "artifacts": {
+    "WaitlistStorageStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "WaitlistStorageStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "WaitlistStorageStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://653268860643/us-east-1",
+      "properties": {
+        "templateFile": "WaitlistStorageStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-deploy-role-653268860643-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-cfn-exec-role-653268860643-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-653268860643-us-east-1/79ac9007e5b3b134750f93e08b11c15761241dec3472228679a7dfbc3804d63b.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "WaitlistStorageStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-lookup-role-653268860643-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "WaitlistStorageStack.assets"
+      ],
+      "metadata": {
+        "/WaitlistStorageStack/WaitlistTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistTable9B05A3AC"
+          }
+        ],
+        "/WaitlistStorageStack/AssetsBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AssetsBucket5CB76180"
+          }
+        ],
+        "/WaitlistStorageStack/AssetsBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AssetsBucketPolicyFFACF6C4"
+          }
+        ],
+        "/WaitlistStorageStack/AssetsBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AssetsBucketAutoDeleteObjectsCustomResource51BA1286"
+          }
+        ],
+        "/WaitlistStorageStack/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/WaitlistStorageStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/WaitlistStorageStack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/WaitlistStorageStack/Certificate/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "Certificate4E7ABB08"
+          }
+        ],
+        "/WaitlistStorageStack/AssetsDistribution/Origin1/S3Origin/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AssetsDistributionOrigin1S3Origin8A1E1785"
+          }
+        ],
+        "/WaitlistStorageStack/AssetsDistribution/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AssetsDistribution16B90841"
+          }
+        ],
+        "/WaitlistStorageStack/AliasRecord/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AliasRecord851000D2"
+          }
+        ],
+        "/WaitlistStorageStack/AWSCloudFrontPartitionHostedZoneIdMap": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AWSCloudFrontPartitionHostedZoneIdMap"
+          }
+        ],
+        "/WaitlistStorageStack/AssetsBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AssetsBucketName"
+          }
+        ],
+        "/WaitlistStorageStack/AssetsBucketArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AssetsBucketArn"
+          }
+        ],
+        "/WaitlistStorageStack/CloudFrontDistributionId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CloudFrontDistributionId"
+          }
+        ],
+        "/WaitlistStorageStack/CloudFrontDomainName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CloudFrontDomainName"
+          }
+        ],
+        "/WaitlistStorageStack/CustomDomainName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomDomainName"
+          }
+        ],
+        "/WaitlistStorageStack/FrontendDeployment/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FrontendDeploymentAwsCliLayer77737BA0"
+          }
+        ],
+        "/WaitlistStorageStack/FrontendDeployment/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FrontendDeploymentCustomResource068A52DB"
+          }
+        ],
+        "/WaitlistStorageStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          }
+        ],
+        "/WaitlistStorageStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+          }
+        ],
+        "/WaitlistStorageStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF"
+          }
+        ],
+        "/WaitlistStorageStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536"
+          }
+        ],
+        "/WaitlistStorageStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/WaitlistStorageStack/Exports/Output{\"Fn::GetAtt\":[\"WaitlistTable9B05A3AC\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttWaitlistTable9B05A3ACArn60C9593A"
+          }
+        ],
+        "/WaitlistStorageStack/Exports/Output{\"Fn::GetAtt\":[\"AssetsBucket5CB76180\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttAssetsBucket5CB76180ArnBF60D959"
+          }
+        ],
+        "/WaitlistStorageStack/Exports/Output{\"Ref\":\"WaitlistTable9B05A3AC\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefWaitlistTable9B05A3ACC671715E"
+          }
+        ],
+        "/WaitlistStorageStack/Exports/Output{\"Ref\":\"AssetsBucket5CB76180\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefAssetsBucket5CB761808BF2E271"
+          }
+        ],
+        "/WaitlistStorageStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/WaitlistStorageStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "WaitlistStorageStack"
+    },
+    "WaitlistComputeStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "WaitlistComputeStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "WaitlistComputeStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://653268860643/us-east-1",
+      "properties": {
+        "templateFile": "WaitlistComputeStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-deploy-role-653268860643-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-cfn-exec-role-653268860643-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-653268860643-us-east-1/5ba7f91d165e4a9ee2d6455847a7d248a4c9a24ca217a50de604fdfa7c7f9e0b.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "WaitlistComputeStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-lookup-role-653268860643-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "WaitlistStorageStack",
+        "WaitlistComputeStack.assets"
+      ],
+      "metadata": {
+        "/WaitlistComputeStack/CreateWaitlistFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateWaitlistFunctionServiceRoleA7FED171"
+          }
+        ],
+        "/WaitlistComputeStack/CreateWaitlistFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateWaitlistFunctionServiceRoleDefaultPolicyB5F3830F"
+          }
+        ],
+        "/WaitlistComputeStack/CreateWaitlistFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateWaitlistFunction591E25D1"
+          }
+        ],
+        "/WaitlistComputeStack/ListWaitlistsFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListWaitlistsFunctionServiceRoleAE3D1238"
+          }
+        ],
+        "/WaitlistComputeStack/ListWaitlistsFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListWaitlistsFunctionServiceRoleDefaultPolicy090F67D4"
+          }
+        ],
+        "/WaitlistComputeStack/ListWaitlistsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListWaitlistsFunction675C0399"
+          }
+        ],
+        "/WaitlistComputeStack/CreateSubscriberFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateSubscriberFunctionServiceRole50E5B4E3"
+          }
+        ],
+        "/WaitlistComputeStack/CreateSubscriberFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateSubscriberFunctionServiceRoleDefaultPolicy4AA55DB8"
+          }
+        ],
+        "/WaitlistComputeStack/CreateSubscriberFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateSubscriberFunction48704A6B"
+          }
+        ],
+        "/WaitlistComputeStack/ListSubscribersFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListSubscribersFunctionServiceRole2395C2AA"
+          }
+        ],
+        "/WaitlistComputeStack/ListSubscribersFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListSubscribersFunctionServiceRoleDefaultPolicyF86F7107"
+          }
+        ],
+        "/WaitlistComputeStack/ListSubscribersFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListSubscribersFunctionC4A3CB54"
+          }
+        ],
+        "/WaitlistComputeStack/ExportSubscribersFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportSubscribersFunctionServiceRoleB233192A"
+          }
+        ],
+        "/WaitlistComputeStack/ExportSubscribersFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportSubscribersFunctionServiceRoleDefaultPolicyC57A78FC"
+          }
+        ],
+        "/WaitlistComputeStack/ExportSubscribersFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportSubscribersFunction0385D2AC"
+          }
+        ],
+        "/WaitlistComputeStack/CreateApiKeyFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateApiKeyFunctionServiceRoleE1D191C5"
+          }
+        ],
+        "/WaitlistComputeStack/CreateApiKeyFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateApiKeyFunctionServiceRoleDefaultPolicy207707F1"
+          }
+        ],
+        "/WaitlistComputeStack/CreateApiKeyFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateApiKeyFunction8C80250B"
+          }
+        ],
+        "/WaitlistComputeStack/ValidateApiKeyFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ValidateApiKeyFunctionServiceRoleC3A10C24"
+          }
+        ],
+        "/WaitlistComputeStack/ValidateApiKeyFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ValidateApiKeyFunctionServiceRoleDefaultPolicyB99D2862"
+          }
+        ],
+        "/WaitlistComputeStack/ValidateApiKeyFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ValidateApiKeyFunction498983D2"
+          }
+        ],
+        "/WaitlistComputeStack/LoginFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LoginFunctionServiceRole74B42ABA"
+          }
+        ],
+        "/WaitlistComputeStack/LoginFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LoginFunction66F090C6"
+          }
+        ],
+        "/WaitlistComputeStack/VerifyTokenFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VerifyTokenFunctionServiceRoleE7660C7E"
+          }
+        ],
+        "/WaitlistComputeStack/VerifyTokenFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "VerifyTokenFunction8FAF0F05"
+          }
+        ],
+        "/WaitlistComputeStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/WaitlistComputeStack/Exports/Output{\"Fn::GetAtt\":[\"CreateWaitlistFunction591E25D1\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttCreateWaitlistFunction591E25D1ArnA2E8CE4B"
+          }
+        ],
+        "/WaitlistComputeStack/Exports/Output{\"Fn::GetAtt\":[\"ListWaitlistsFunction675C0399\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttListWaitlistsFunction675C0399Arn2F630C38"
+          }
+        ],
+        "/WaitlistComputeStack/Exports/Output{\"Fn::GetAtt\":[\"CreateSubscriberFunction48704A6B\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttCreateSubscriberFunction48704A6BArnA2B0141A"
+          }
+        ],
+        "/WaitlistComputeStack/Exports/Output{\"Fn::GetAtt\":[\"ListSubscribersFunctionC4A3CB54\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttListSubscribersFunctionC4A3CB54Arn9FF6AEC0"
+          }
+        ],
+        "/WaitlistComputeStack/Exports/Output{\"Fn::GetAtt\":[\"ExportSubscribersFunction0385D2AC\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttExportSubscribersFunction0385D2ACArn4BC09B38"
+          }
+        ],
+        "/WaitlistComputeStack/Exports/Output{\"Fn::GetAtt\":[\"CreateApiKeyFunction8C80250B\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttCreateApiKeyFunction8C80250BArn150DD7E4"
+          }
+        ],
+        "/WaitlistComputeStack/Exports/Output{\"Fn::GetAtt\":[\"ValidateApiKeyFunction498983D2\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttValidateApiKeyFunction498983D2ArnB4365DCE"
+          }
+        ],
+        "/WaitlistComputeStack/Exports/Output{\"Fn::GetAtt\":[\"LoginFunction66F090C6\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttLoginFunction66F090C6Arn235F881E"
+          }
+        ],
+        "/WaitlistComputeStack/Exports/Output{\"Fn::GetAtt\":[\"VerifyTokenFunction8FAF0F05\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttVerifyTokenFunction8FAF0F05Arn803F466D"
+          }
+        ],
+        "/WaitlistComputeStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/WaitlistComputeStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "WaitlistComputeStack"
+    },
+    "WaitlistApiStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "WaitlistApiStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "WaitlistApiStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://653268860643/us-east-1",
+      "properties": {
+        "templateFile": "WaitlistApiStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-deploy-role-653268860643-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-cfn-exec-role-653268860643-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-653268860643-us-east-1/8514ec0ef5bceb473203b214e77c4e79a89abfb1bd55232fa7bfeae7cda90757.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "WaitlistApiStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-lookup-role-653268860643-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "WaitlistComputeStack",
+        "WaitlistApiStack.assets"
+      ],
+      "metadata": {
+        "/WaitlistApiStack/WaitlistApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApi1E94F1B5"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiCloudWatchRoleAFE72C8B"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiAccountF016DFBE"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiDeployment75F86F21eefe25b5090f225ace87af521ebb2c4b"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/DeploymentStage.prod/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiDeploymentStageprod514D1053"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiEndpoint02AB4181"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiOPTIONS80B3ABA9"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/waitlists/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiwaitlists45868175"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/waitlists/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiwaitlistsOPTIONS6A19AFBA"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/waitlists/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..waitlists": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiwaitlistsPOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTwaitlistsF1954376"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/waitlists/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..waitlists": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiwaitlistsPOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTwaitlistsA9FE7A9C"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/waitlists/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiwaitlistsPOST866215DE"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/waitlists/GET/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.GET..waitlists": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiwaitlistsGETApiPermissionWaitlistApiStackWaitlistApiA77B2C03GETwaitlistsA3120ADA"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/waitlists/GET/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.GET..waitlists": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiwaitlistsGETApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03GETwaitlistsE9793B51"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/waitlists/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiwaitlistsGET1C48D0DA"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribers5481058D"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersOPTIONS9FD79260"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..subscribers": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersPOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTsubscribers0C0832E2"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..subscribers": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersPOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTsubscribersEBB79C57"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersPOST41C63439"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/GET/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.GET..subscribers": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersGETApiPermissionWaitlistApiStackWaitlistApiA77B2C03GETsubscribers6DDCFFE3"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/GET/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.GET..subscribers": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersGETApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03GETsubscribers6129A8B8"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersGETDC838220"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/export/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersexport6DB9EE95"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/export/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersexportOPTIONS92D061C4"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/export/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..subscribers.export": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersexportPOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTsubscribersexport4AE09885"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/export/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..subscribers.export": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersexportPOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTsubscribersexport781E4D1B"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/subscribers/export/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApisubscribersexportPOSTF1E0BD02"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauth7D1C681B"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthOPTIONS2A1D23E0"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/apikeys/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthapikeys07A8D4A5"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/apikeys/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthapikeysOPTIONS707CC95E"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/apikeys/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.apikeys": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthapikeysPOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTauthapikeysF7FF4331"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/apikeys/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.apikeys": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthapikeysPOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTauthapikeysD4BD185F"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/apikeys/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthapikeysPOST135C496A"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/validate/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthvalidate510398B7"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/validate/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthvalidateOPTIONSD5005A18"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/validate/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.validate": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthvalidatePOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTauthvalidateF0B8EBB1"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/validate/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.validate": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthvalidatePOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTauthvalidate610458DC"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/validate/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthvalidatePOSTF8D2C479"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/login/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthlogin4F9E2F08"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/login/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthloginOPTIONS9EEAA546"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/login/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.login": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthloginPOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTauthloginA9666149"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/login/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.login": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthloginPOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTauthloginB8BC138E"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/login/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthloginPOST6EF54210"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/verify/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthverify00D3FA0F"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/verify/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthverifyOPTIONSB2B46B42"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/verify/GET/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.GET..auth.verify": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthverifyGETApiPermissionWaitlistApiStackWaitlistApiA77B2C03GETauthverify6340B47B"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/verify/GET/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.GET..auth.verify": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthverifyGETApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03GETauthverify0AB99689"
+          }
+        ],
+        "/WaitlistApiStack/WaitlistApi/Default/auth/verify/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "WaitlistApiauthverifyGETB7B1BC89"
+          }
+        ],
+        "/WaitlistApiStack/ApiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiUrl"
+          }
+        ],
+        "/WaitlistApiStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/WaitlistApiStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/WaitlistApiStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "WaitlistApiStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "aws-cdk-lib/feature-flag-report": {
+      "type": "cdk:feature-flag-report",
+      "properties": {
+        "module": "aws-cdk-lib",
+        "flags": {
+          "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": {
+            "recommendedValue": true,
+            "explanation": "Pass signingProfileName to CfnSigningProfile"
+          },
+          "@aws-cdk/core:newStyleStackSynthesis": {
+            "recommendedValue": true,
+            "explanation": "Switch to new stack synthesis method which enables CI/CD",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:stackRelativeExports": {
+            "recommendedValue": true,
+            "explanation": "Name exports based on the construct paths relative to the stack, rather than the global construct path",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-ecs-patterns:secGroupsDisablesImplicitOpenListener": {
+            "recommendedValue": true,
+            "explanation": "Disable implicit openListener when custom security groups are provided"
+          },
+          "@aws-cdk/aws-rds:lowercaseDbIdentifier": {
+            "recommendedValue": true,
+            "explanation": "Force lowercasing of RDS Cluster names in CDK",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": {
+            "recommendedValue": true,
+            "explanation": "Allow adding/removing multiple UsagePlanKeys independently",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-lambda:recognizeVersionProps": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to opt in to the updated logical id calculation for Lambda Version created using the  `fn.currentVersion`.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-lambda:recognizeLayerVersion": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to opt in to the updated logical id calculation for Lambda Version created using the `fn.currentVersion`."
+          },
+          "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to have cloudfront distributions use the security policy TLSv1.2_2021 by default.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:checkSecretUsage": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this flag to make it impossible to accidentally use SecretValues in unsafe locations"
+          },
+          "@aws-cdk/core:target-partitions": {
+            "userValue": [
+              "aws",
+              "aws-cn"
+            ],
+            "recommendedValue": [
+              "aws",
+              "aws-cn"
+            ],
+            "explanation": "What regions to include in lookup tables of environment agnostic stacks"
+          },
+          "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": {
+            "recommendedValue": true,
+            "explanation": "ECS extensions will automatically add an `awslogs` driver if no logging is specified"
+          },
+          "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to have Launch Templates generated by the `InstanceRequireImdsv2Aspect` use unique names."
+          },
+          "@aws-cdk/aws-ecs:arnFormatIncludesClusterName": {
+            "recommendedValue": true,
+            "explanation": "ARN format used by ECS. In the new ARN format, the cluster name is part of the resource ID."
+          },
+          "@aws-cdk/aws-iam:minimizePolicies": {
+            "recommendedValue": true,
+            "explanation": "Minimize IAM policies by combining Statements"
+          },
+          "@aws-cdk/core:validateSnapshotRemovalPolicy": {
+            "recommendedValue": true,
+            "explanation": "Error on snapshot removal policies on resources that do not support it."
+          },
+          "@aws-cdk/aws-codepipeline:crossAccountKeyAliasStackSafeResourceName": {
+            "recommendedValue": true,
+            "explanation": "Generate key aliases that include the stack name"
+          },
+          "@aws-cdk/aws-s3:createDefaultLoggingPolicy": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to create an S3 bucket policy by default in cases where an AWS service would automatically create the Policy if one does not exist."
+          },
+          "@aws-cdk/aws-sns-subscriptions:restrictSqsDescryption": {
+            "recommendedValue": true,
+            "explanation": "Restrict KMS key policy for encrypted Queues a bit more"
+          },
+          "@aws-cdk/aws-apigateway:disableCloudWatchRole": {
+            "recommendedValue": true,
+            "explanation": "Make default CloudWatch Role behavior safe for multiple API Gateways in one environment"
+          },
+          "@aws-cdk/core:enablePartitionLiterals": {
+            "recommendedValue": true,
+            "explanation": "Make ARNs concrete if AWS partition is known"
+          },
+          "@aws-cdk/aws-events:eventsTargetQueueSameAccount": {
+            "recommendedValue": true,
+            "explanation": "Event Rules may only push to encrypted SQS queues in the same account"
+          },
+          "@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker": {
+            "recommendedValue": true,
+            "explanation": "Avoid setting the \"ECS\" deployment controller when adding a circuit breaker"
+          },
+          "@aws-cdk/aws-iam:importedRoleStackSafeDefaultPolicyName": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature to by default create default policy names for imported roles that depend on the stack the role is in."
+          },
+          "@aws-cdk/aws-s3:serverAccessLogsUseBucketPolicy": {
+            "recommendedValue": true,
+            "explanation": "Use S3 Bucket Policy instead of ACLs for Server Access Logging"
+          },
+          "@aws-cdk/aws-route53-patters:useCertificate": {
+            "recommendedValue": true,
+            "explanation": "Use the official `Certificate` resource instead of `DnsValidatedCertificate`"
+          },
+          "@aws-cdk/customresources:installLatestAwsSdkDefault": {
+            "recommendedValue": false,
+            "explanation": "Whether to install the latest SDK by default in AwsCustomResource"
+          },
+          "@aws-cdk/aws-rds:databaseProxyUniqueResourceName": {
+            "recommendedValue": true,
+            "explanation": "Use unique resource name for Database Proxy"
+          },
+          "@aws-cdk/aws-codedeploy:removeAlarmsFromDeploymentGroup": {
+            "recommendedValue": true,
+            "explanation": "Remove CloudWatch alarms from deployment group"
+          },
+          "@aws-cdk/aws-apigateway:authorizerChangeDeploymentLogicalId": {
+            "recommendedValue": true,
+            "explanation": "Include authorizer configuration in the calculation of the API deployment logical ID."
+          },
+          "@aws-cdk/aws-ec2:launchTemplateDefaultUserData": {
+            "recommendedValue": true,
+            "explanation": "Define user data for a launch template by default when a machine image is provided."
+          },
+          "@aws-cdk/aws-secretsmanager:useAttachedSecretResourcePolicyForSecretTargetAttachments": {
+            "recommendedValue": true,
+            "explanation": "SecretTargetAttachments uses the ResourcePolicy of the attached Secret."
+          },
+          "@aws-cdk/aws-redshift:columnId": {
+            "recommendedValue": true,
+            "explanation": "Whether to use an ID to track Redshift column changes"
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:enableEmrServicePolicyV2": {
+            "recommendedValue": true,
+            "explanation": "Enable AmazonEMRServicePolicy_v2 managed policies"
+          },
+          "@aws-cdk/aws-ec2:restrictDefaultSecurityGroup": {
+            "recommendedValue": true,
+            "explanation": "Restrict access to the VPC default security group"
+          },
+          "@aws-cdk/aws-apigateway:requestValidatorUniqueId": {
+            "recommendedValue": true,
+            "explanation": "Generate a unique id for each RequestValidator added to a method"
+          },
+          "@aws-cdk/aws-kms:aliasNameRef": {
+            "recommendedValue": true,
+            "explanation": "KMS Alias name and keyArn will have implicit reference to KMS Key"
+          },
+          "@aws-cdk/aws-kms:applyImportedAliasPermissionsToPrincipal": {
+            "recommendedValue": true,
+            "explanation": "Enable grant methods on Aliases imported by name to use kms:ResourceAliases condition"
+          },
+          "@aws-cdk/aws-autoscaling:generateLaunchTemplateInsteadOfLaunchConfig": {
+            "recommendedValue": true,
+            "explanation": "Generate a launch template when creating an AutoScalingGroup"
+          },
+          "@aws-cdk/core:includePrefixInUniqueNameGeneration": {
+            "recommendedValue": true,
+            "explanation": "Include the stack prefix in the stack name generation process"
+          },
+          "@aws-cdk/aws-efs:denyAnonymousAccess": {
+            "recommendedValue": true,
+            "explanation": "EFS denies anonymous clients accesses"
+          },
+          "@aws-cdk/aws-opensearchservice:enableOpensearchMultiAzWithStandby": {
+            "recommendedValue": true,
+            "explanation": "Enables support for Multi-AZ with Standby deployment for opensearch domains"
+          },
+          "@aws-cdk/aws-lambda-nodejs:useLatestRuntimeVersion": {
+            "recommendedValue": true,
+            "explanation": "Enables aws-lambda-nodejs.Function to use the latest available NodeJs runtime as the default"
+          },
+          "@aws-cdk/aws-efs:mountTargetOrderInsensitiveLogicalId": {
+            "recommendedValue": true,
+            "explanation": "When enabled, mount targets will have a stable logicalId that is linked to the associated subnet."
+          },
+          "@aws-cdk/aws-rds:auroraClusterChangeScopeOfInstanceParameterGroupWithEachParameters": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a scope of InstanceParameterGroup for AuroraClusterInstance with each parameters will change."
+          },
+          "@aws-cdk/aws-appsync:useArnForSourceApiAssociationIdentifier": {
+            "recommendedValue": true,
+            "explanation": "When enabled, will always use the arn for identifiers for CfnSourceApiAssociation in the GraphqlApi construct rather than id."
+          },
+          "@aws-cdk/aws-rds:preventRenderingDeprecatedCredentials": {
+            "recommendedValue": true,
+            "explanation": "When enabled, creating an RDS database cluster from a snapshot will only render credentials for snapshot credentials."
+          },
+          "@aws-cdk/aws-codepipeline-actions:useNewDefaultBranchForCodeCommitSource": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the CodeCommit source action is using the default branch name 'main'."
+          },
+          "@aws-cdk/aws-cloudwatch-actions:changeLambdaPermissionLogicalIdForLambdaAction": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the logical ID of a Lambda permission for a Lambda action includes an alarm ID."
+          },
+          "@aws-cdk/aws-codepipeline:crossAccountKeysDefaultValueToFalse": {
+            "recommendedValue": true,
+            "explanation": "Enables Pipeline to set the default value for crossAccountKeys to false."
+          },
+          "@aws-cdk/aws-codepipeline:defaultPipelineTypeToV2": {
+            "recommendedValue": true,
+            "explanation": "Enables Pipeline to set the default pipeline type to V2."
+          },
+          "@aws-cdk/aws-kms:reduceCrossAccountRegionPolicyScope": {
+            "recommendedValue": true,
+            "explanation": "When enabled, IAM Policy created from KMS key grant will reduce the resource scope to this key only."
+          },
+          "@aws-cdk/pipelines:reduceAssetRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "Remove the root account principal from PipelineAssetsFileRole trust policy",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-eks:nodegroupNameAttribute": {
+            "recommendedValue": true,
+            "explanation": "When enabled, nodegroupName attribute of the provisioned EKS NodeGroup will not have the cluster name prefix."
+          },
+          "@aws-cdk/aws-ec2:ebsDefaultGp3Volume": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default volume type of the EBS volume will be GP3"
+          },
+          "@aws-cdk/aws-ecs:removeDefaultDeploymentAlarm": {
+            "recommendedValue": true,
+            "explanation": "When enabled, remove default deployment alarm settings"
+          },
+          "@aws-cdk/custom-resources:logApiResponseDataPropertyTrueDefault": {
+            "recommendedValue": false,
+            "explanation": "When enabled, the custom resource used for `AwsCustomResource` will configure the `logApiResponseData` property as true by default"
+          },
+          "@aws-cdk/aws-s3:keepNotificationInImportedBucket": {
+            "recommendedValue": false,
+            "explanation": "When enabled, Adding notifications to a bucket in the current stack will not remove notification from imported stack."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:useNewS3UriParametersForBedrockInvokeModelTask": {
+            "recommendedValue": true,
+            "explanation": "When enabled, use new props for S3 URI field in task definition of state machine for bedrock invoke model.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:explicitStackTags": {
+            "recommendedValue": true,
+            "explanation": "When enabled, stack tags need to be assigned explicitly on a Stack."
+          },
+          "@aws-cdk/aws-ecs:enableImdsBlockingDeprecatedFeature": {
+            "recommendedValue": false,
+            "explanation": "When set to true along with canContainersAccessInstanceRole=false in ECS cluster, new updated commands will be added to UserData to block container accessing IMDS. **Applicable to Linux only. IMPORTANT: See [details.](#aws-cdkaws-ecsenableImdsBlockingDeprecatedFeature)**"
+          },
+          "@aws-cdk/aws-ecs:disableEcsImdsBlocking": {
+            "recommendedValue": true,
+            "explanation": "When set to true, CDK synth will throw exception if canContainersAccessInstanceRole is false. **IMPORTANT: See [details.](#aws-cdkaws-ecsdisableEcsImdsBlocking)**"
+          },
+          "@aws-cdk/aws-ecs:reduceEc2FargateCloudWatchPermissions": {
+            "recommendedValue": true,
+            "explanation": "When enabled, we will only grant the necessary permissions when users specify cloudwatch log group through logConfiguration"
+          },
+          "@aws-cdk/aws-dynamodb:resourcePolicyPerReplica": {
+            "recommendedValue": true,
+            "explanation": "When enabled will allow you to specify a resource policy per replica, and not copy the source table policy to all replicas"
+          },
+          "@aws-cdk/aws-ec2:ec2SumTImeoutEnabled": {
+            "recommendedValue": true,
+            "explanation": "When enabled, initOptions.timeout and resourceSignalTimeout values will be summed together."
+          },
+          "@aws-cdk/aws-appsync:appSyncGraphQLAPIScopeLambdaPermission": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a Lambda authorizer Permission created when using GraphqlApi will be properly scoped with a SourceArn."
+          },
+          "@aws-cdk/aws-rds:setCorrectValueForDatabaseInstanceReadReplicaInstanceResourceId": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the value of property `instanceResourceId` in construct `DatabaseInstanceReadReplica` will be set to the correct value which is `DbiResourceId` instead of currently `DbInstanceArn`"
+          },
+          "@aws-cdk/core:cfnIncludeRejectComplexResourceUpdateCreatePolicyIntrinsics": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CFN templates added with `cfn-include` will error if the template contains Resource Update or Create policies with CFN Intrinsics that include non-primitive values."
+          },
+          "@aws-cdk/aws-lambda-nodejs:sdkV3ExcludeSmithyPackages": {
+            "recommendedValue": true,
+            "explanation": "When enabled, both `@aws-sdk` and `@smithy` packages will be excluded from the Lambda Node.js 18.x runtime to prevent version mismatches in bundled applications."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:fixRunEcsTaskPolicy": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the resource of IAM Run Ecs policy generated by SFN EcsRunTask will reference the definition, instead of constructing ARN."
+          },
+          "@aws-cdk/aws-ec2:bastionHostUseAmazonLinux2023ByDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the BastionHost construct will use the latest Amazon Linux 2023 AMI, instead of Amazon Linux 2."
+          },
+          "@aws-cdk/core:aspectStabilization": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a stabilization loop will be run when invoking Aspects during synthesis.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-route53-targets:userPoolDomainNameMethodWithoutCustomResource": {
+            "recommendedValue": true,
+            "explanation": "When enabled, use a new method for DNS Name of user pool domain target without creating a custom resource."
+          },
+          "@aws-cdk/aws-elasticloadbalancingV2:albDualstackWithoutPublicIpv4SecurityGroupRulesDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default security group ingress rules will allow IPv6 ingress from anywhere"
+          },
+          "@aws-cdk/aws-iam:oidcRejectUnauthorizedConnections": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default behaviour of OIDC provider will reject unauthorized connections"
+          },
+          "@aws-cdk/core:enableAdditionalMetadataCollection": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK will expand the scope of usage data collected to better inform CDK development and improve communication for security concerns and emerging issues."
+          },
+          "@aws-cdk/aws-lambda:createNewPoliciesWithAddToRolePolicy": {
+            "recommendedValue": false,
+            "explanation": "[Deprecated] When enabled, Lambda will create new inline policies with AddToRolePolicy instead of adding to the Default Policy Statement"
+          },
+          "@aws-cdk/aws-s3:setUniqueReplicationRoleName": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK will automatically generate a unique role name that is used for s3 object replication."
+          },
+          "@aws-cdk/pipelines:reduceStageRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "Remove the root account principal from Stage addActions trust policy",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-events:requireEventBusPolicySid": {
+            "recommendedValue": true,
+            "explanation": "When enabled, grantPutEventsTo() will use resource policies with Statement IDs for service principals."
+          },
+          "@aws-cdk/core:aspectPrioritiesMutating": {
+            "recommendedValue": true,
+            "explanation": "When set to true, Aspects added by the construct library on your behalf will be given a priority of MUTATING."
+          },
+          "@aws-cdk/aws-dynamodb:retainTableReplica": {
+            "recommendedValue": true,
+            "explanation": "When enabled, table replica will be default to the removal policy of source table unless specified otherwise."
+          },
+          "@aws-cdk/cognito:logUserPoolClientSecretValue": {
+            "recommendedValue": false,
+            "explanation": "When disabled, the value of the user pool client secret will not be logged in the custom resource lambda function logs."
+          },
+          "@aws-cdk/pipelines:reduceCrossAccountActionRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "When enabled, scopes down the trust policy for the cross-account action role",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-stepfunctions:useDistributedMapResultWriterV2": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the resultWriterV2 property of DistributedMap will be used insted of resultWriter"
+          },
+          "@aws-cdk/s3-notifications:addS3TrustKeyPolicyForSnsSubscriptions": {
+            "recommendedValue": true,
+            "explanation": "Add an S3 trust policy to a KMS key resource policy for SNS subscriptions."
+          },
+          "@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the EgressOnlyGateway resource is only created if private subnets are defined in the dual-stack VPC."
+          },
+          "@aws-cdk/aws-ec2-alpha:useResourceIdForVpcV2Migration": {
+            "recommendedValue": false,
+            "explanation": "When enabled, use resource IDs for VPC V2 migration"
+          },
+          "@aws-cdk/aws-s3:publicAccessBlockedByDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, setting any combination of options for BlockPublicAccess will automatically set true for any options not defined."
+          },
+          "@aws-cdk/aws-lambda:useCdkManagedLogGroup": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK creates and manages loggroup for the lambda function"
+          }
+        }
+      }
+    }
+  },
+  "minimumCliVersion": "2.1030.0"
+}

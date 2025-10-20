@@ -12,6 +12,10 @@ interface ApiStackProps extends cdk.StackProps {
     exportSubscribers: lambda.Function
     createApiKey: lambda.Function
     validateApiKey: lambda.Function
+    login: lambda.Function
+    verifyToken: lambda.Function
+    cognitoLogin: lambda.Function
+    cognitoVerify: lambda.Function
   }
 }
 
@@ -97,6 +101,42 @@ export class ApiStack extends cdk.Stack {
     
     const validateKey = auth.addResource('validate')
     validateKey.addMethod('POST', new apigateway.LambdaIntegration(props.functions.validateApiKey), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '401' },
+        { statusCode: '500' }
+      ]
+    })
+
+    const login = auth.addResource('login')
+    login.addMethod('POST', new apigateway.LambdaIntegration(props.functions.login), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '401' },
+        { statusCode: '500' }
+      ]
+    })
+
+    const verify = auth.addResource('verify')
+    verify.addMethod('GET', new apigateway.LambdaIntegration(props.functions.verifyToken), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '401' },
+        { statusCode: '500' }
+      ]
+    })
+
+    const cognitoLogin = auth.addResource('cognito-login')
+    cognitoLogin.addMethod('POST', new apigateway.LambdaIntegration(props.functions.cognitoLogin), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '401' },
+        { statusCode: '500' }
+      ]
+    })
+
+    const cognitoVerify = auth.addResource('cognito-verify')
+    cognitoVerify.addMethod('GET', new apigateway.LambdaIntegration(props.functions.cognitoVerify), {
       methodResponses: [
         { statusCode: '200' },
         { statusCode: '401' },

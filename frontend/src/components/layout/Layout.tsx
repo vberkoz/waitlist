@@ -1,15 +1,19 @@
-import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { useState, useEffect } from 'react'
-import { Home, Users, Settings, List, Menu } from 'lucide-react'
+import { Home, Users, Settings, List } from 'lucide-react'
+import { useCurrentUser, useLogout } from '@/features/auth/hooks/useAuth'
 
 export default function Layout() {
   const location = useLocation()
+  const navigate = useNavigate()
   const [open, setOpen] = useState(false)
+  const { data: user } = useCurrentUser()
+  const logout = useLogout()
 
   const isActive = (path: string) => location.pathname === path
 
@@ -64,14 +68,18 @@ export default function Layout() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="w-full justify-start">
                   <Avatar className="h-6 w-6">
-                    <AvatarFallback>U</AvatarFallback>
+                    <AvatarFallback>{user?.email?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                   </Avatar>
-                  <span className="ml-2">User</span>
+                  <span className="ml-2">{user?.email || 'User'}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem disabled>
+                  {user?.email}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => { logout(); navigate('/login') }}>
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarFooter>

@@ -10,6 +10,8 @@ import * as path from 'path'
 interface ComputeStackProps extends cdk.StackProps {
   table: dynamodb.Table
   assetsBucket: s3.Bucket
+  userPoolId?: string
+  userPoolClientId?: string
 }
 
 export class ComputeStack extends cdk.Stack {
@@ -21,6 +23,10 @@ export class ComputeStack extends cdk.Stack {
     exportSubscribers: lambda.Function
     createApiKey: lambda.Function
     validateApiKey: lambda.Function
+    login: lambda.Function
+    verifyToken: lambda.Function
+    cognitoLogin: lambda.Function
+    cognitoVerify: lambda.Function
   }
 
   constructor(scope: Construct, id: string, props: ComputeStackProps) {
@@ -89,6 +95,38 @@ export class ComputeStack extends cdk.Stack {
           TABLE_NAME: props.table.tableName,
           ASSETS_BUCKET: props.assetsBucket.bucketName
         }
+      }),
+      login: new NodejsFunction(this, 'LoginFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        entry: path.join(__dirname, '../../../backend/src/functions/auth/login.ts'),
+        handler: 'handler',
+        environment: {
+          ADMIN_EMAIL: 'admin@waitlist.com',
+          ADMIN_PASSWORD_HASH: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
+          JWT_SECRET: 'your-jwt-secret-key-change-in-production'
+        }
+      }),
+      verifyToken: new NodejsFunction(this, 'VerifyTokenFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        entry: path.join(__dirname, '../../../backend/src/functions/auth/verify.ts'),
+        handler: 'handler',
+        environment: {
+          JWT_SECRET: 'your-jwt-secret-key-change-in-production'
+        }
+      }),
+      cognitoLogin: new NodejsFunction(this, 'CognitoLoginFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        entry: path.join(__dirname, '../../../backend/src/functions/auth/cognito-login.ts'),
+        handler: 'handler',
+        environment: {
+          COGNITO_USER_POOL_ID: props.userPoolId || '',
+          COGNITO_CLIENT_ID: props.userPoolClientId || ''
+        }
+      }),
+      cognitoVerify: new NodejsFunction(this, 'CognitoVerifyFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        entry: path.join(__dirname, '../../../backend/src/functions/auth/cognito-verify.ts'),
+        handler: 'handler'
       })
     }
 
@@ -162,6 +200,18 @@ export class ComputeStack extends cdk.Stack {
       effect: iam.Effect.ALLOW,
       actions: ['dynamodb:GetItem', 'dynamodb:UpdateItem', 'dynamodb:Scan'],
       resources: [props.table.tableArn]
+    }))
+
+    this.functions.cognitoLogin.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['cognito-idp:InitiateAuth'],
+      resources: ['*']
+    }))
+
+    this.functions.cognitoVerify.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['cognito-idp:GetUser'],
+      resources: ['*']
     }))
   }
 }

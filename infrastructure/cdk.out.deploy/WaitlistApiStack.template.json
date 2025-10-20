@@ -1,0 +1,1756 @@
+{
+ "Resources": {
+  "WaitlistApi1E94F1B5": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Waitlist Management API",
+    "Name": "Waitlist API"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Resource"
+   }
+  },
+  "WaitlistApiCloudWatchRoleAFE72C8B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/CloudWatchRole/Resource"
+   }
+  },
+  "WaitlistApiAccountF016DFBE": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "WaitlistApiCloudWatchRoleAFE72C8B",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "WaitlistApi1E94F1B5"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Account"
+   }
+  },
+  "WaitlistApiDeployment75F86F21eefe25b5090f225ace87af521ebb2c4b": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Waitlist Management API",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "DependsOn": [
+    "WaitlistApiauthapikeysOPTIONS707CC95E",
+    "WaitlistApiauthapikeysPOST135C496A",
+    "WaitlistApiauthapikeys07A8D4A5",
+    "WaitlistApiauthloginOPTIONS9EEAA546",
+    "WaitlistApiauthloginPOST6EF54210",
+    "WaitlistApiauthlogin4F9E2F08",
+    "WaitlistApiauthOPTIONS2A1D23E0",
+    "WaitlistApiauth7D1C681B",
+    "WaitlistApiauthvalidateOPTIONSD5005A18",
+    "WaitlistApiauthvalidatePOSTF8D2C479",
+    "WaitlistApiauthvalidate510398B7",
+    "WaitlistApiauthverifyGETB7B1BC89",
+    "WaitlistApiauthverifyOPTIONSB2B46B42",
+    "WaitlistApiauthverify00D3FA0F",
+    "WaitlistApiOPTIONS80B3ABA9",
+    "WaitlistApisubscribersexportOPTIONS92D061C4",
+    "WaitlistApisubscribersexportPOSTF1E0BD02",
+    "WaitlistApisubscribersexport6DB9EE95",
+    "WaitlistApisubscribersGETDC838220",
+    "WaitlistApisubscribersOPTIONS9FD79260",
+    "WaitlistApisubscribersPOST41C63439",
+    "WaitlistApisubscribers5481058D",
+    "WaitlistApiwaitlistsGET1C48D0DA",
+    "WaitlistApiwaitlistsOPTIONS6A19AFBA",
+    "WaitlistApiwaitlistsPOST866215DE",
+    "WaitlistApiwaitlists45868175"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
+   }
+  },
+  "WaitlistApiDeploymentStageprod514D1053": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "WaitlistApiDeployment75F86F21eefe25b5090f225ace87af521ebb2c4b"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": true,
+      "HttpMethod": "*",
+      "LoggingLevel": "INFO",
+      "MetricsEnabled": true,
+      "ResourcePath": "/*",
+      "ThrottlingBurstLimit": 200,
+      "ThrottlingRateLimit": 100
+     }
+    ],
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "WaitlistApiAccountF016DFBE"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "WaitlistApiOPTIONS80B3ABA9": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "WaitlistApi1E94F1B5",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApiwaitlists45868175": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "WaitlistApi1E94F1B5",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "waitlists",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/waitlists/Resource"
+   }
+  },
+  "WaitlistApiwaitlistsOPTIONS6A19AFBA": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiwaitlists45868175"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/waitlists/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApiwaitlistsPOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTwaitlistsF1954376": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttCreateWaitlistFunction591E25D1ArnA2E8CE4B"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/",
+       {
+        "Ref": "WaitlistApiDeploymentStageprod514D1053"
+       },
+       "/POST/waitlists"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/waitlists/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..waitlists"
+   }
+  },
+  "WaitlistApiwaitlistsPOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTwaitlistsA9FE7A9C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttCreateWaitlistFunction591E25D1ArnA2E8CE4B"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/test-invoke-stage/POST/waitlists"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/waitlists/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..waitlists"
+   }
+  },
+  "WaitlistApiwaitlistsPOST866215DE": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttCreateWaitlistFunction591E25D1ArnA2E8CE4B"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     },
+     {
+      "StatusCode": "400"
+     },
+     {
+      "StatusCode": "500"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiwaitlists45868175"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/waitlists/POST/Resource"
+   }
+  },
+  "WaitlistApiwaitlistsGETApiPermissionWaitlistApiStackWaitlistApiA77B2C03GETwaitlistsA3120ADA": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttListWaitlistsFunction675C0399Arn2F630C38"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/",
+       {
+        "Ref": "WaitlistApiDeploymentStageprod514D1053"
+       },
+       "/GET/waitlists"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/waitlists/GET/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.GET..waitlists"
+   }
+  },
+  "WaitlistApiwaitlistsGETApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03GETwaitlistsE9793B51": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttListWaitlistsFunction675C0399Arn2F630C38"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/test-invoke-stage/GET/waitlists"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/waitlists/GET/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.GET..waitlists"
+   }
+  },
+  "WaitlistApiwaitlistsGET1C48D0DA": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttListWaitlistsFunction675C0399Arn2F630C38"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     },
+     {
+      "StatusCode": "500"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiwaitlists45868175"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/waitlists/GET/Resource"
+   }
+  },
+  "WaitlistApisubscribers5481058D": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "WaitlistApi1E94F1B5",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "subscribers",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/Resource"
+   }
+  },
+  "WaitlistApisubscribersOPTIONS9FD79260": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApisubscribers5481058D"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApisubscribersPOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTsubscribers0C0832E2": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttCreateSubscriberFunction48704A6BArnA2B0141A"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/",
+       {
+        "Ref": "WaitlistApiDeploymentStageprod514D1053"
+       },
+       "/POST/subscribers"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..subscribers"
+   }
+  },
+  "WaitlistApisubscribersPOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTsubscribersEBB79C57": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttCreateSubscriberFunction48704A6BArnA2B0141A"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/test-invoke-stage/POST/subscribers"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..subscribers"
+   }
+  },
+  "WaitlistApisubscribersPOST41C63439": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttCreateSubscriberFunction48704A6BArnA2B0141A"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     },
+     {
+      "StatusCode": "400"
+     },
+     {
+      "StatusCode": "500"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApisubscribers5481058D"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/POST/Resource"
+   }
+  },
+  "WaitlistApisubscribersGETApiPermissionWaitlistApiStackWaitlistApiA77B2C03GETsubscribers6DDCFFE3": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttListSubscribersFunctionC4A3CB54Arn9FF6AEC0"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/",
+       {
+        "Ref": "WaitlistApiDeploymentStageprod514D1053"
+       },
+       "/GET/subscribers"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/GET/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.GET..subscribers"
+   }
+  },
+  "WaitlistApisubscribersGETApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03GETsubscribers6129A8B8": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttListSubscribersFunctionC4A3CB54Arn9FF6AEC0"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/test-invoke-stage/GET/subscribers"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/GET/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.GET..subscribers"
+   }
+  },
+  "WaitlistApisubscribersGETDC838220": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttListSubscribersFunctionC4A3CB54Arn9FF6AEC0"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     },
+     {
+      "StatusCode": "500"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApisubscribers5481058D"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/GET/Resource"
+   }
+  },
+  "WaitlistApisubscribersexport6DB9EE95": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "WaitlistApisubscribers5481058D"
+    },
+    "PathPart": "export",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/export/Resource"
+   }
+  },
+  "WaitlistApisubscribersexportOPTIONS92D061C4": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApisubscribersexport6DB9EE95"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/export/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApisubscribersexportPOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTsubscribersexport4AE09885": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttExportSubscribersFunction0385D2ACArn4BC09B38"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/",
+       {
+        "Ref": "WaitlistApiDeploymentStageprod514D1053"
+       },
+       "/POST/subscribers/export"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/export/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..subscribers.export"
+   }
+  },
+  "WaitlistApisubscribersexportPOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTsubscribersexport781E4D1B": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttExportSubscribersFunction0385D2ACArn4BC09B38"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/test-invoke-stage/POST/subscribers/export"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/export/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..subscribers.export"
+   }
+  },
+  "WaitlistApisubscribersexportPOSTF1E0BD02": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttExportSubscribersFunction0385D2ACArn4BC09B38"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     },
+     {
+      "StatusCode": "500"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApisubscribersexport6DB9EE95"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/subscribers/export/POST/Resource"
+   }
+  },
+  "WaitlistApiauth7D1C681B": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "WaitlistApi1E94F1B5",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "auth",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/Resource"
+   }
+  },
+  "WaitlistApiauthOPTIONS2A1D23E0": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiauth7D1C681B"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApiauthapikeys07A8D4A5": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "WaitlistApiauth7D1C681B"
+    },
+    "PathPart": "apikeys",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/apikeys/Resource"
+   }
+  },
+  "WaitlistApiauthapikeysOPTIONS707CC95E": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiauthapikeys07A8D4A5"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/apikeys/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApiauthapikeysPOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTauthapikeysF7FF4331": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttCreateApiKeyFunction8C80250BArn150DD7E4"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/",
+       {
+        "Ref": "WaitlistApiDeploymentStageprod514D1053"
+       },
+       "/POST/auth/apikeys"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/apikeys/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.apikeys"
+   }
+  },
+  "WaitlistApiauthapikeysPOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTauthapikeysD4BD185F": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttCreateApiKeyFunction8C80250BArn150DD7E4"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/test-invoke-stage/POST/auth/apikeys"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/apikeys/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.apikeys"
+   }
+  },
+  "WaitlistApiauthapikeysPOST135C496A": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttCreateApiKeyFunction8C80250BArn150DD7E4"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "201"
+     },
+     {
+      "StatusCode": "400"
+     },
+     {
+      "StatusCode": "500"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiauthapikeys07A8D4A5"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/apikeys/POST/Resource"
+   }
+  },
+  "WaitlistApiauthvalidate510398B7": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "WaitlistApiauth7D1C681B"
+    },
+    "PathPart": "validate",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/validate/Resource"
+   }
+  },
+  "WaitlistApiauthvalidateOPTIONSD5005A18": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiauthvalidate510398B7"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/validate/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApiauthvalidatePOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTauthvalidateF0B8EBB1": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttValidateApiKeyFunction498983D2ArnB4365DCE"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/",
+       {
+        "Ref": "WaitlistApiDeploymentStageprod514D1053"
+       },
+       "/POST/auth/validate"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/validate/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.validate"
+   }
+  },
+  "WaitlistApiauthvalidatePOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTauthvalidate610458DC": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttValidateApiKeyFunction498983D2ArnB4365DCE"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/test-invoke-stage/POST/auth/validate"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/validate/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.validate"
+   }
+  },
+  "WaitlistApiauthvalidatePOSTF8D2C479": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttValidateApiKeyFunction498983D2ArnB4365DCE"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     },
+     {
+      "StatusCode": "401"
+     },
+     {
+      "StatusCode": "500"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiauthvalidate510398B7"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/validate/POST/Resource"
+   }
+  },
+  "WaitlistApiauthlogin4F9E2F08": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "WaitlistApiauth7D1C681B"
+    },
+    "PathPart": "login",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/login/Resource"
+   }
+  },
+  "WaitlistApiauthloginOPTIONS9EEAA546": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiauthlogin4F9E2F08"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/login/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApiauthloginPOSTApiPermissionWaitlistApiStackWaitlistApiA77B2C03POSTauthloginA9666149": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttLoginFunction66F090C6Arn235F881E"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/",
+       {
+        "Ref": "WaitlistApiDeploymentStageprod514D1053"
+       },
+       "/POST/auth/login"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/login/POST/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.login"
+   }
+  },
+  "WaitlistApiauthloginPOSTApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03POSTauthloginB8BC138E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttLoginFunction66F090C6Arn235F881E"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/test-invoke-stage/POST/auth/login"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/login/POST/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.POST..auth.login"
+   }
+  },
+  "WaitlistApiauthloginPOST6EF54210": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttLoginFunction66F090C6Arn235F881E"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     },
+     {
+      "StatusCode": "401"
+     },
+     {
+      "StatusCode": "500"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiauthlogin4F9E2F08"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/login/POST/Resource"
+   }
+  },
+  "WaitlistApiauthverify00D3FA0F": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "WaitlistApiauth7D1C681B"
+    },
+    "PathPart": "verify",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/verify/Resource"
+   }
+  },
+  "WaitlistApiauthverifyOPTIONSB2B46B42": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'GET,POST,PUT,DELETE,OPTIONS'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiauthverify00D3FA0F"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/verify/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApiauthverifyGETApiPermissionWaitlistApiStackWaitlistApiA77B2C03GETauthverify6340B47B": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttVerifyTokenFunction8FAF0F05Arn803F466D"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/",
+       {
+        "Ref": "WaitlistApiDeploymentStageprod514D1053"
+       },
+       "/GET/auth/verify"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/verify/GET/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.GET..auth.verify"
+   }
+  },
+  "WaitlistApiauthverifyGETApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03GETauthverify0AB99689": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttVerifyTokenFunction8FAF0F05Arn803F466D"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/test-invoke-stage/GET/auth/verify"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/verify/GET/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.GET..auth.verify"
+   }
+  },
+  "WaitlistApiauthverifyGETB7B1BC89": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttVerifyTokenFunction8FAF0F05Arn803F466D"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "MethodResponses": [
+     {
+      "StatusCode": "200"
+     },
+     {
+      "StatusCode": "401"
+     },
+     {
+      "StatusCode": "500"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiauthverify00D3FA0F"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/auth/verify/GET/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WNWwrCQAxF1+L/NOq4Ah+/otQFSJxGjc6jNBmLlO5dahX0K+eeyyUWrJ3BbIKtFK66F55P0B0U3d1gK8cOa76gUotP6EoSXdZs1uf4g0vnUo5qNlT79AwUdbA/6aB4ocGNUJKk3DhaoZDZkl5TNZQf+rafJ2/uDWOArkx+1MlTbzyGU4WwPsc9NYFFOMX+b77LWmftTUwVwU2mD2thvoD55CbMRZOjciAox/sCWGzcSwgBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "WaitlistApiEndpoint02AB4181": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "WaitlistApi1E94F1B5"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "WaitlistApiDeploymentStageprod514D1053"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Description": "API Gateway URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "WaitlistApi1E94F1B5"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "WaitlistApiDeploymentStageprod514D1053"
+      },
+      "/"
+     ]
+    ]
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

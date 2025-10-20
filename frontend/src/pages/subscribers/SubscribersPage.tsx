@@ -35,7 +35,7 @@ export default function SubscribersPage() {
       onSuccess: (data) => {
         toast.success(`Exported ${data.count} subscribers successfully`)
       },
-      onError: (error) => {
+      onError: () => {
         toast.error('Failed to export subscribers')
       }
     })
