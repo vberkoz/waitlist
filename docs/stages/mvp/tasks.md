@@ -55,7 +55,6 @@
   - ✅ S3 bucket deployment with CDK BucketDeployment
   - ✅ Custom domain setup with Route53 and ACM certificate
   - ✅ Environment-specific CDK stacks (dev, staging, prod)
-  - [ ] CDK pipeline for automated infrastructure deployments
 
 ### Remaining Tasks
 - [x] **Complete Backend Implementation**
@@ -77,8 +76,44 @@
   - ✅ Protected routes and logout functionality
   - ✅ Custom login UI with form validation
 
+### Critical MVP Additions
+
+- [ ] **Actual Waitlist Page Generation**
+  - Generate static HTML pages from waitlist data
+  - Public-facing signup forms that work
+  - Custom subdomain hosting for generated pages
+
+- [ ] **Email Integration**
+  - Email validation service (AWS SES or third-party)
+  - Welcome emails for new subscribers
+  - Admin notification emails
+
+- [ ] **Basic Analytics**
+  - Signup conversion tracking
+  - Traffic sources
+  - Simple dashboard metrics
+
+- [ ] **Essential Settings**
+  - Waitlist configuration (name, description, branding)
+  - Email templates customization
+  - Subdomain management
+
+- [ ] **Data Export/Import**
+  - Bulk subscriber import (CSV)
+  - Backup/restore functionality
+
+### Nice-to-Have MVP Features
+
+- [ ] **Basic Engagement**
+  - Simple referral tracking
+  - Position in waitlist display
+  - Basic email notifications
+
+- [ ] **Security Enhancements**
+  - Rate limiting on signup forms
+  - CAPTCHA integration
+  - Spam protection
+
 - [ ] **Testing & Polish**
-  - Add unit tests for critical functions
-  - Test deployment pipeline
   - Performance optimization
   - Error handling improvements
