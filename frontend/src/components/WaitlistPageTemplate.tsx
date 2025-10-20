@@ -1,6 +1,9 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 const emailSchema = z.object({
   email: z.string().email('Invalid email address')
@@ -21,7 +24,6 @@ export default function WaitlistPageTemplate({
   logo,
   title,
   description,
-  primaryColor = '#3b82f6',
   subscriberCount = 0,
   onSubmit
 }: WaitlistPageTemplateProps) {
@@ -35,7 +37,7 @@ export default function WaitlistPageTemplate({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-muted px-4">
       <div className="max-w-2xl w-full text-center space-y-8">
         {logo && (
           <div className="flex justify-center">
@@ -43,38 +45,32 @@ export default function WaitlistPageTemplate({
           </div>
         )}
 
-        <h1 className="text-4xl font-bold text-neutral-900">{title}</h1>
+        <h1 className="text-4xl font-bold">{title}</h1>
 
-        <p className="text-lg text-neutral-700">{description}</p>
+        <p className="text-lg text-muted-foreground">{description}</p>
 
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
           <div className="flex gap-2 max-w-md mx-auto">
             <div className="flex-1">
-              <input
+              <Input
                 {...register('email')}
                 type="email"
                 placeholder="Enter your email"
-                className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
+                className="h-12"
               />
               {errors.email && (
-                <p className="text-error-500 text-sm mt-1 text-left">{errors.email.message}</p>
+                <p className="text-destructive text-sm mt-1 text-left">{errors.email.message}</p>
               )}
             </div>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="px-6 py-3 rounded-lg font-medium text-white disabled:opacity-50"
-              style={{ backgroundColor: primaryColor }}
-            >
+            <Button type="submit" disabled={isSubmitting} className="h-12 px-8">
               Join
-            </button>
+            </Button>
           </div>
         </form>
 
         {subscriberCount > 0 && (
-          <p className="text-neutral-600">
-            ✓ {subscriberCount.toLocaleString()} people already joined
+          <p className="text-muted-foreground">
+            ✓ <Badge variant="secondary">{subscriberCount.toLocaleString()}</Badge> people already joined
           </p>
         )}
       </div>
