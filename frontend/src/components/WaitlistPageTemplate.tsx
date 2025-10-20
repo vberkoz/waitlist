@@ -4,6 +4,8 @@ import { z } from 'zod'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 const emailSchema = z.object({
   email: z.string().email('Invalid email address')
@@ -59,7 +61,11 @@ export default function WaitlistPageTemplate({
                 className="h-12"
               />
               {errors.email && (
-                <p className="text-destructive text-sm mt-1 text-left">{errors.email.message}</p>
+                <Alert variant="destructive" className="mt-2">
+                  <AlertDescription className="text-left">
+                    {errors.email.message}
+                  </AlertDescription>
+                </Alert>
               )}
             </div>
             <Button type="submit" disabled={isSubmitting} className="h-12 px-8">
@@ -69,9 +75,12 @@ export default function WaitlistPageTemplate({
         </form>
 
         {subscriberCount > 0 && (
-          <p className="text-muted-foreground">
-            ✓ <Badge variant="secondary">{subscriberCount.toLocaleString()}</Badge> people already joined
-          </p>
+          <div className="space-y-2">
+            <Progress value={(subscriberCount / 1000) * 100} className="w-full max-w-md mx-auto" />
+            <p className="text-muted-foreground">
+              ✓ <Badge variant="secondary">{subscriberCount.toLocaleString()}</Badge> people already joined
+            </p>
+          </div>
         )}
       </div>
     </div>
