@@ -18,6 +18,7 @@ export class ComputeStack extends cdk.Stack {
     listWaitlists: lambda.Function
     createSubscriber: lambda.Function
     listSubscribers: lambda.Function
+    exportSubscribers: lambda.Function
     createApiKey: lambda.Function
     validateApiKey: lambda.Function
   }
@@ -56,6 +57,15 @@ export class ComputeStack extends cdk.Stack {
       listSubscribers: new NodejsFunction(this, 'ListSubscribersFunction', {
         runtime: lambda.Runtime.NODEJS_20_X,
         entry: path.join(__dirname, '../../../backend/src/functions/subscribers/list.ts'),
+        handler: 'handler',
+        environment: {
+          TABLE_NAME: props.table.tableName,
+          ASSETS_BUCKET: props.assetsBucket.bucketName
+        }
+      }),
+      exportSubscribers: new NodejsFunction(this, 'ExportSubscribersFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        entry: path.join(__dirname, '../../../backend/src/functions/subscribers/export.ts'),
         handler: 'handler',
         environment: {
           TABLE_NAME: props.table.tableName,
@@ -127,6 +137,18 @@ export class ComputeStack extends cdk.Stack {
     this.functions.listSubscribers.addToRolePolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: ['s3:GetObject'],
+      resources: [`${props.assetsBucket.bucketArn}/exports/*`]
+    }))
+
+    this.functions.exportSubscribers.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:Query'],
+      resources: [props.table.tableArn, `${props.table.tableArn}/index/*`]
+    }))
+
+    this.functions.exportSubscribers.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['s3:PutObject', 's3:GetObject'],
       resources: [`${props.assetsBucket.bucketArn}/exports/*`]
     }))
 

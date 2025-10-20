@@ -46,7 +46,7 @@
   - ✅ UI components library (shadcn/ui)
   - ✅ Subscriber list view with TanStack Table
   - ✅ Basic sorting and filtering functionality
-  - [ ] CSV export feature using S3 pre-signed URLs
+  - ✅ CSV export feature using S3 pre-signed URLs
   - [ ] Authentication system for dashboard access
 
 ### Hosting & Deployment

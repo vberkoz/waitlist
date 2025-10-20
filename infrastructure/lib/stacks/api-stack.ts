@@ -9,6 +9,7 @@ interface ApiStackProps extends cdk.StackProps {
     listWaitlists: lambda.Function
     createSubscriber: lambda.Function
     listSubscribers: lambda.Function
+    exportSubscribers: lambda.Function
     createApiKey: lambda.Function
     validateApiKey: lambda.Function
   }
@@ -70,6 +71,14 @@ export class ApiStack extends cdk.Stack {
       ]
     })
     subscribers.addMethod('GET', new apigateway.LambdaIntegration(props.functions.listSubscribers), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '500' }
+      ]
+    })
+
+    const exportSubscribers = subscribers.addResource('export')
+    exportSubscribers.addMethod('POST', new apigateway.LambdaIntegration(props.functions.exportSubscribers), {
       methodResponses: [
         { statusCode: '200' },
         { statusCode: '500' }

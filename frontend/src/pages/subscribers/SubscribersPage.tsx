@@ -3,8 +3,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSubscribers } from '@/features/subscribers/hooks/useSubscribers'
+import { useExportSubscribers } from '@/features/subscribers/hooks/useExportSubscribers'
 import { DataTable } from '@/components/subscribers/data-table'
 import { columns } from '@/components/subscribers/columns'
+import { toast } from 'sonner'
 
 export default function SubscribersPage() {
   const [search, setSearch] = useState('')
@@ -23,6 +25,19 @@ export default function SubscribersPage() {
     search: debouncedSearch || undefined,
     sortOrder
   })
+
+  const exportMutation = useExportSubscribers()
+
+  const handleExport = () => {
+    exportMutation.mutate('test-waitlist-123', {
+      onSuccess: (data) => {
+        toast.success(`Exported ${data.count} subscribers successfully`)
+      },
+      onError: (error) => {
+        toast.error('Failed to export subscribers')
+      }
+    })
+  }
 
   if (isLoading) {
     return (
@@ -73,7 +88,12 @@ export default function SubscribersPage() {
               <SelectItem value="asc">Oldest</SelectItem>
             </SelectContent>
           </Select>
-          <Button>Export CSV</Button>
+          <Button 
+            onClick={handleExport}
+            disabled={exportMutation.isPending}
+          >
+            {exportMutation.isPending ? 'Exporting...' : 'Export CSV'}
+          </Button>
         </div>
       </div>
 
