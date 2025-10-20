@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { useCreateWaitlist } from '@/features/waitlists/hooks/useWaitlists'
+import { toast } from 'sonner'
 
 const formSchema = z.object({
   name: z.string().min(2, 'Project name must be at least 2 characters'),
@@ -28,9 +30,19 @@ export default function CreateWaitlistPage() {
     }
   })
 
+  const createMutation = useCreateWaitlist()
+
   const onSubmit = (data: FormData) => {
-    console.log('Form data:', data)
-    navigate('/waitlists/preview')
+    createMutation.mutate(data, {
+      onSuccess: () => {
+        toast.success('Waitlist created successfully!')
+        navigate('/waitlists')
+      },
+      onError: (error) => {
+        toast.error('Failed to create waitlist')
+        console.error('Create waitlist error:', error)
+      }
+    })
   }
 
   return (
@@ -110,8 +122,8 @@ export default function CreateWaitlistPage() {
                 <Button type="button" variant="outline" onClick={() => navigate('/waitlists')}>
                   Cancel
                 </Button>
-                <Button type="submit">
-                  Next: Preview →
+                <Button type="submit" disabled={createMutation.isPending}>
+                  {createMutation.isPending ? 'Creating...' : 'Create Waitlist'}
                 </Button>
               </div>
             </form>

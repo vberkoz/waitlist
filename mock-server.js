@@ -19,7 +19,9 @@ app.get('/', (req, res) => {
     endpoints: {
       'POST /auth/login': 'Login with email/password',
       'GET /auth/verify': 'Verify JWT token',
-      'GET /subscribers': 'Get subscribers (requires auth)'
+      'GET /subscribers': 'Get subscribers (requires auth)',
+      'POST /waitlists': 'Create waitlist (requires auth)',
+      'GET /waitlists': 'List waitlists (requires auth)'
     },
     testCredentials: {
       email: 'admin@waitlist.com',
@@ -80,6 +82,50 @@ app.get('/subscribers', (req, res) => {
       { id: '1', email: 'test@example.com', createdAt: new Date().toISOString() }
     ]
   })
+})
+
+// Mock waitlists storage
+let waitlists = []
+let waitlistIdCounter = 1
+
+// Create waitlist endpoint
+app.post('/waitlists', (req, res) => {
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+  
+  const { name, description, primaryColor, logo } = req.body
+  
+  if (!name || !description || !primaryColor) {
+    return res.status(400).json({ error: 'Missing required fields' })
+  }
+  
+  const waitlist = {
+    id: `waitlist_${waitlistIdCounter++}`,
+    name,
+    description,
+    primaryColor,
+    logo,
+    ownerEmail: 'admin@waitlist.com',
+    subscriberCount: 0,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+  
+  waitlists.push(waitlist)
+  
+  res.status(201).json({ waitlist })
+})
+
+// List waitlists endpoint
+app.get('/waitlists', (req, res) => {
+  const authHeader = req.headers.authorization
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized' })
+  }
+  
+  res.json({ waitlists })
 })
 
 app.listen(PORT, () => {

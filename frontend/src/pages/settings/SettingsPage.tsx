@@ -29,7 +29,7 @@ export default function SettingsPage() {
     }
   })
 
-  const onSubmit = async (data: AccountData) => {
+  const onSubmit = async (_data: AccountData) => {
     setIsLoading(true)
     try {
       // TODO: Implement user update API

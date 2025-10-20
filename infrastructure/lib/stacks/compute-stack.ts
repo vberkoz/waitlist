@@ -39,7 +39,8 @@ export class ComputeStack extends cdk.Stack {
         handler: 'handler',
         environment: {
           TABLE_NAME: props.table.tableName,
-          ASSETS_BUCKET: props.assetsBucket.bucketName
+          ASSETS_BUCKET: props.assetsBucket.bucketName,
+          JWT_SECRET: 'your-jwt-secret-key-change-in-production'
         }
       }),
       listWaitlists: new NodejsFunction(this, 'ListWaitlistsFunction', {
@@ -48,7 +49,8 @@ export class ComputeStack extends cdk.Stack {
         handler: 'handler',
         environment: {
           TABLE_NAME: props.table.tableName,
-          ASSETS_BUCKET: props.assetsBucket.bucketName
+          ASSETS_BUCKET: props.assetsBucket.bucketName,
+          JWT_SECRET: 'your-jwt-secret-key-change-in-production'
         }
       }),
       createSubscriber: new NodejsFunction(this, 'CreateSubscriberFunction', {

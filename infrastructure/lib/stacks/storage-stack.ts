@@ -137,11 +137,12 @@ export class StorageStack extends cdk.Stack {
       description: 'Custom domain name'
     })
 
-    new s3deploy.BucketDeployment(this, 'FrontendDeployment', {
-      sources: [s3deploy.Source.asset(path.join(__dirname, '../../../frontend/dist'))],
-      destinationBucket: this.buckets.assets,
-      distribution: this.distribution,
-      distributionPaths: ['/*']
-    })
+    // Frontend deployment removed temporarily - deploy manually
+    // new s3deploy.BucketDeployment(this, 'FrontendDeployment', {
+    //   sources: [s3deploy.Source.asset(path.join(__dirname, '../../../frontend/dist'))],
+    //   destinationBucket: this.buckets.assets,
+    //   distribution: this.distribution,
+    //   distributionPaths: ['/*']
+    // })
   }
 }
