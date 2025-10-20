@@ -1,5 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import { toast } from 'sonner'
 import WaitlistPageTemplate from '../../components/WaitlistPageTemplate'
 
 export default function PreviewPublishPage() {
@@ -9,7 +16,7 @@ export default function PreviewPublishPage() {
 
   const handlePublish = () => {
     console.log('Publishing with hosting option:', hostingOption)
-    alert('Waitlist published successfully!')
+    toast.success('Waitlist published successfully!')
     navigate('/waitlists')
   }
 
@@ -20,91 +27,58 @@ export default function PreviewPublishPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900">Create New Waitlist</h1>
-        <p className="text-neutral-600 mt-1">Step 2 of 2: Preview & Publish</p>
+        <h1 className="text-2xl font-bold">Create New Waitlist</h1>
+        <p className="text-muted-foreground mt-1">Step 2 of 2: Preview & Publish</p>
       </div>
 
-      <div className="bg-white p-8 rounded-lg shadow-sm border border-neutral-200 space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-medium text-neutral-900">Preview</h2>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setViewMode('desktop')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                viewMode === 'desktop'
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
-              }`}
-            >
-              Desktop
-            </button>
-            <button
-              onClick={() => setViewMode('mobile')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                viewMode === 'mobile'
-                  ? 'bg-primary-600 text-white'
-                  : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'
-              }`}
-            >
-              Mobile
-            </button>
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <CardTitle>Preview</CardTitle>
+            <ToggleGroup type="single" value={viewMode} onValueChange={(value) => value && setViewMode(value as 'desktop' | 'mobile')}>
+              <ToggleGroupItem value="desktop">Desktop</ToggleGroupItem>
+              <ToggleGroupItem value="mobile">Mobile</ToggleGroupItem>
+            </ToggleGroup>
           </div>
-        </div>
-
-        <div className={`border border-neutral-300 rounded-lg overflow-hidden ${viewMode === 'mobile' ? 'max-w-sm mx-auto' : ''}`}>
-          <div className="bg-white" style={{ transform: viewMode === 'mobile' ? 'scale(0.8)' : 'scale(1)', transformOrigin: 'top' }}>
-            <WaitlistPageTemplate
-              title="Product Launch 2024"
-              description="Join our waitlist to be the first to know when we launch"
-              subscriberCount={0}
-              onSubmit={handleSubmit}
-            />
-          </div>
-        </div>
-
-        <div className="space-y-4 pt-6 border-t border-neutral-200">
-          <h3 className="font-medium text-neutral-900">Hosting Options:</h3>
-          <div className="space-y-2">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="hosting"
-                value="cdn"
-                checked={hostingOption === 'cdn'}
-                onChange={(e) => setHostingOption(e.target.value as 'cdn')}
-                className="w-4 h-4"
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className={`border rounded-lg overflow-hidden ${viewMode === 'mobile' ? 'max-w-sm mx-auto' : ''}`}>
+            <div style={{ transform: viewMode === 'mobile' ? 'scale(0.8)' : 'scale(1)', transformOrigin: 'top' }}>
+              <WaitlistPageTemplate
+                title="Product Launch 2024"
+                description="Join our waitlist to be the first to know when we launch"
+                subscriberCount={0}
+                onSubmit={handleSubmit}
               />
-              <span className="text-neutral-700">Platform Hosting (CDN)</span>
-            </label>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="hosting"
-                value="export"
-                checked={hostingOption === 'export'}
-                onChange={(e) => setHostingOption(e.target.value as 'export')}
-                className="w-4 h-4"
-              />
-              <span className="text-neutral-700">Export Static Files</span>
-            </label>
+            </div>
           </div>
-        </div>
 
-        <div className="flex justify-between pt-4">
-          <button
-            onClick={() => navigate('/waitlists/create')}
-            className="px-6 py-2 border border-neutral-300 rounded-lg font-medium text-neutral-700 hover:bg-neutral-50"
-          >
-            ← Back
-          </button>
-          <button
-            onClick={handlePublish}
-            className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium"
-          >
-            Publish ✓
-          </button>
-        </div>
-      </div>
+          <Separator />
+
+          <div className="space-y-4">
+            <h3 className="font-medium">Hosting Options:</h3>
+            <RadioGroup value={hostingOption} onValueChange={(value) => setHostingOption(value as 'cdn' | 'export')}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="cdn" id="cdn" />
+                <Label htmlFor="cdn">Platform Hosting (CDN)</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="export" id="export" />
+                <Label htmlFor="export">Export Static Files</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          <div className="flex justify-between pt-4">
+            <Button variant="outline" onClick={() => navigate('/waitlists/create')}>
+              ← Back
+            </Button>
+            <Button onClick={handlePublish}>
+              Publish ✓
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

@@ -1,3 +1,8 @@
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
+
 export default function SubscribersPage() {
   const subscribers = [
     { id: 1, email: 'user@email.com', date: '2024-01-15' },
@@ -8,46 +13,58 @@ export default function SubscribersPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-neutral-900">Subscribers - Product Launch 2024</h1>
+        <h1 className="text-2xl font-bold">Subscribers - Product Launch 2024</h1>
         <div className="flex gap-2">
-          <input
-            type="search"
-            placeholder="Search"
-            className="px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          />
-          <button className="px-4 py-2 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50">Filter ▼</button>
-          <button className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium">Export CSV</button>
+          <Input type="search" placeholder="Search" className="w-64" />
+          <Button variant="outline">Filter</Button>
+          <Button>Export CSV</Button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200">
-        <div className="grid grid-cols-3 gap-4 p-4 border-b border-neutral-200 font-medium text-neutral-700">
-          <div>Email</div>
-          <div>Date</div>
-          <div>Actions</div>
-        </div>
-        {subscribers.map((sub) => (
-          <div key={sub.id} className="grid grid-cols-3 gap-4 p-4 border-b border-neutral-200 last:border-b-0 items-center">
-            <div className="text-neutral-900">{sub.email}</div>
-            <div className="text-neutral-700">{sub.date}</div>
-            <div>
-              <button className="text-error-500 hover:text-error-600 text-sm font-medium">Delete</button>
-            </div>
-          </div>
-        ))}
+      <div className="border rounded-lg">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Email</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {subscribers.map((sub) => (
+              <TableRow key={sub.id}>
+                <TableCell>{sub.email}</TableCell>
+                <TableCell>{sub.date}</TableCell>
+                <TableCell>
+                  <Button variant="destructive" size="sm">Delete</Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
 
-      <div className="flex justify-between items-center text-sm text-neutral-600">
-        <div>Showing 1-10 of 234</div>
-        <div className="flex gap-2">
-          <button className="px-3 py-1 border border-neutral-300 rounded hover:bg-neutral-50">&lt;</button>
-          <button className="px-3 py-1 bg-primary-600 text-white rounded">1</button>
-          <button className="px-3 py-1 border border-neutral-300 rounded hover:bg-neutral-50">2</button>
-          <button className="px-3 py-1 border border-neutral-300 rounded hover:bg-neutral-50">3</button>
-          <button className="px-3 py-1 border border-neutral-300 rounded hover:bg-neutral-50">...</button>
-          <button className="px-3 py-1 border border-neutral-300 rounded hover:bg-neutral-50">24</button>
-          <button className="px-3 py-1 border border-neutral-300 rounded hover:bg-neutral-50">&gt;</button>
-        </div>
+      <div className="flex justify-between items-center">
+        <div className="text-sm text-muted-foreground">Showing 1-10 of 234</div>
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#" />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#" isActive>1</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">2</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationLink href="#">3</PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext href="#" />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   )

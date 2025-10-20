@@ -1,6 +1,10 @@
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
 
 export default function WaitlistsPage() {
+  const navigate = useNavigate()
+
   const waitlists = [
     { id: 1, name: 'Product Launch 2024', subscribers: 234, createdAt: '2024-01-15' },
     { id: 2, name: 'Beta Program', subscribers: 89, createdAt: '2024-01-10' },
@@ -10,33 +14,36 @@ export default function WaitlistsPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-neutral-900">Waitlists</h1>
-        <Link
-          to="/waitlists/create"
-          className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-2 rounded-lg font-medium"
-        >
-          + Create New Waitlist
-        </Link>
+        <h1 className="text-2xl font-bold">Waitlists</h1>
+        <Button onClick={() => navigate('/waitlists/create')}>+ Create New Waitlist</Button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-neutral-200">
-        <div className="grid grid-cols-4 gap-4 p-4 border-b border-neutral-200 font-medium text-neutral-700">
-          <div>Name</div>
-          <div>Subscribers</div>
-          <div>Created</div>
-          <div>Actions</div>
-        </div>
-        {waitlists.map((waitlist) => (
-          <div key={waitlist.id} className="grid grid-cols-4 gap-4 p-4 border-b border-neutral-200 last:border-b-0 items-center">
-            <div className="font-medium text-neutral-900">{waitlist.name}</div>
-            <div className="text-neutral-700">{waitlist.subscribers}</div>
-            <div className="text-neutral-700">{waitlist.createdAt}</div>
-            <div className="flex gap-2">
-              <button className="px-4 py-1 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50">View</button>
-              <button className="px-4 py-1 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50">Edit</button>
-            </div>
-          </div>
-        ))}
+      <div className="border rounded-lg">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Subscribers</TableHead>
+              <TableHead>Created</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {waitlists.map((waitlist) => (
+              <TableRow key={waitlist.id}>
+                <TableCell className="font-medium">{waitlist.name}</TableCell>
+                <TableCell>{waitlist.subscribers}</TableCell>
+                <TableCell>{waitlist.createdAt}</TableCell>
+                <TableCell>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm">View</Button>
+                    <Button variant="outline" size="sm">Edit</Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )
