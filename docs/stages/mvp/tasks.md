@@ -32,10 +32,10 @@
   - ✅ Setup Vite build process for optimized static output
 
 ### Data Collection & API
-- [ ] **Backend API Development**
-  - ⚠️ Lambda function for email subscription endpoint (stub created)
-  - [ ] DynamoDB integration for storing subscriber data
-  - [ ] Email validation service integration
+- [x] **Backend API Development**
+  - ✅ Lambda function for email subscription endpoint
+  - ✅ DynamoDB integration for storing subscriber data
+  - ✅ Email validation using Zod schemas
   - [ ] API key generation and validation system
   - ✅ CORS configuration for cross-origin requests
 
