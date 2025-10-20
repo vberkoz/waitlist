@@ -1,7 +1,8 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { PutCommand } from '@aws-sdk/lib-dynamodb'
+import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb'
 import { dynamodb } from '../../lib/dynamodb'
 import { generateId, createResponse } from '../../lib/utils'
+import { hashApiKey, validateApiKeyFormat } from '../../lib/apikey'
 import { createSubscriberSchema } from '../../../../shared/schemas/subscriber'
 import { Subscriber } from '../../../../shared/types/subscriber'
 
@@ -9,12 +10,42 @@ const TABLE_NAME = process.env.TABLE_NAME!
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
+    // Validate API key
+    const apiKey = event.headers['x-api-key'] || event.headers['X-API-Key']
+    
+    if (!apiKey) {
+      return createResponse(401, { error: 'API key is required' })
+    }
+
+    if (!validateApiKeyFormat(apiKey)) {
+      return createResponse(401, { error: 'Invalid API key format' })
+    }
+
+    const keyHash = hashApiKey(apiKey)
+    const { Items } = await dynamodb.send(new ScanCommand({
+      TableName: TABLE_NAME,
+      FilterExpression: 'keyHash = :hash AND begins_with(PK, :pk)',
+      ExpressionAttributeValues: {
+        ':hash': keyHash,
+        ':pk': 'APIKEY#'
+      }
+    }))
+
+    if (!Items || Items.length === 0 || !Items[0].isActive) {
+      return createResponse(401, { error: 'Invalid or inactive API key' })
+    }
+
+    const validatedWaitlistId = Items[0].waitlistId
+
     if (!event.body) {
       return createResponse(400, { error: 'Request body is required' })
     }
 
     const body = JSON.parse(event.body)
-    const validation = createSubscriberSchema.safeParse(body)
+    const validation = createSubscriberSchema.safeParse({
+      email: body.email,
+      waitlistId: validatedWaitlistId // Use waitlistId from API key
+    })
     
     if (!validation.success) {
       return createResponse(400, { 

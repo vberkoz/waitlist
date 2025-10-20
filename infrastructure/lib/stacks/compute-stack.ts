@@ -18,6 +18,8 @@ export class ComputeStack extends cdk.Stack {
     listWaitlists: lambda.Function
     createSubscriber: lambda.Function
     listSubscribers: lambda.Function
+    createApiKey: lambda.Function
+    validateApiKey: lambda.Function
   }
 
   constructor(scope: Construct, id: string, props: ComputeStackProps) {
@@ -59,6 +61,24 @@ export class ComputeStack extends cdk.Stack {
           TABLE_NAME: props.table.tableName,
           ASSETS_BUCKET: props.assetsBucket.bucketName
         }
+      }),
+      createApiKey: new NodejsFunction(this, 'CreateApiKeyFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        entry: path.join(__dirname, '../../../backend/src/functions/auth/create-apikey.ts'),
+        handler: 'handler',
+        environment: {
+          TABLE_NAME: props.table.tableName,
+          ASSETS_BUCKET: props.assetsBucket.bucketName
+        }
+      }),
+      validateApiKey: new NodejsFunction(this, 'ValidateApiKeyFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        entry: path.join(__dirname, '../../../backend/src/functions/auth/validate-apikey.ts'),
+        handler: 'handler',
+        environment: {
+          TABLE_NAME: props.table.tableName,
+          ASSETS_BUCKET: props.assetsBucket.bucketName
+        }
       })
     }
 
@@ -76,7 +96,7 @@ export class ComputeStack extends cdk.Stack {
 
     this.functions.createSubscriber.addToRolePolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
-      actions: ['dynamodb:PutItem', 'dynamodb:GetItem', 'dynamodb:UpdateItem'],
+      actions: ['dynamodb:PutItem', 'dynamodb:GetItem', 'dynamodb:UpdateItem', 'dynamodb:Scan'],
       resources: [props.table.tableArn]
     }))
 
@@ -108,6 +128,18 @@ export class ComputeStack extends cdk.Stack {
       effect: iam.Effect.ALLOW,
       actions: ['s3:GetObject'],
       resources: [`${props.assetsBucket.bucketArn}/exports/*`]
+    }))
+
+    this.functions.createApiKey.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:PutItem', 'dynamodb:GetItem'],
+      resources: [props.table.tableArn]
+    }))
+
+    this.functions.validateApiKey.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:GetItem', 'dynamodb:UpdateItem', 'dynamodb:Scan'],
+      resources: [props.table.tableArn]
     }))
   }
 }
