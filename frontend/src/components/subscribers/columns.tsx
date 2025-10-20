@@ -13,14 +13,41 @@ export type Subscriber = {
 export const columns: ColumnDef<Subscriber>[] = [
   {
     accessorKey: "email",
-    header: "Email",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="h-auto p-0 font-medium"
+        >
+          Email
+          {column.getIsSorted() === "asc" ? " ↑" : column.getIsSorted() === "desc" ? " ↓" : ""}
+        </Button>
+      )
+    },
   },
   {
     accessorKey: "createdAt",
-    header: "Date",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="h-auto p-0 font-medium"
+        >
+          Date
+          {column.getIsSorted() === "asc" ? " ↑" : column.getIsSorted() === "desc" ? " ↓" : ""}
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"))
       return date.toLocaleDateString()
+    },
+    sortingFn: (rowA, rowB) => {
+      const dateA = new Date(rowA.getValue("createdAt"))
+      const dateB = new Date(rowB.getValue("createdAt"))
+      return dateA.getTime() - dateB.getTime()
     },
   },
   {

@@ -4,8 +4,14 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
+  getFilteredRowModel,
+  SortingState,
+  ColumnFiltersState,
   useReactTable,
 } from "@tanstack/react-table"
+
+import { useState } from "react"
 
 import {
   Table,
@@ -25,10 +31,21 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    state: {
+      sorting,
+      columnFilters,
+    },
   })
 
   return (

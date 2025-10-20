@@ -1,11 +1,28 @@
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useSubscribers } from '@/features/subscribers/hooks/useSubscribers'
 import { DataTable } from '@/components/subscribers/data-table'
 import { columns } from '@/components/subscribers/columns'
 
 export default function SubscribersPage() {
-  const { data, isLoading, error } = useSubscribers()
+  const [search, setSearch] = useState('')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  // Debounce search input
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [search])
+
+  const { data, isLoading, error } = useSubscribers({
+    search: debouncedSearch || undefined,
+    sortOrder
+  })
 
   if (isLoading) {
     return (
@@ -40,8 +57,22 @@ export default function SubscribersPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Subscribers</h1>
         <div className="flex gap-2">
-          <Input type="search" placeholder="Search" className="w-64" />
-          <Button variant="outline">Filter</Button>
+          <Input 
+            type="search" 
+            placeholder="Search by email..." 
+            className="w-64" 
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Select value={sortOrder} onValueChange={(value: 'asc' | 'desc') => setSortOrder(value)}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="desc">Newest</SelectItem>
+              <SelectItem value="asc">Oldest</SelectItem>
+            </SelectContent>
+          </Select>
           <Button>Export CSV</Button>
         </div>
       </div>

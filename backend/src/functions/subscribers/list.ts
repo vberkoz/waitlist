@@ -10,6 +10,8 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     const waitlistId = event.queryStringParameters?.waitlistId || 'test-waitlist-123'
     const limit = parseInt(event.queryStringParameters?.limit || '10')
     const lastKey = event.queryStringParameters?.lastKey
+    const sortOrder = event.queryStringParameters?.sortOrder || 'desc' // desc = newest first
+    const search = event.queryStringParameters?.search
 
     const queryParams: any = {
       TableName: TABLE_NAME,
@@ -20,7 +22,13 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
         ':sk': 'SUBSCRIBER#'
       },
       Limit: limit,
-      ScanIndexForward: false // Most recent first
+      ScanIndexForward: sortOrder === 'asc' // true = oldest first, false = newest first
+    }
+
+    // Add email filter if search is provided
+    if (search) {
+      queryParams.FilterExpression = 'contains(email, :search)'
+      queryParams.ExpressionAttributeValues[':search'] = search
     }
 
     if (lastKey) {
