@@ -1,0 +1,221 @@
+{
+ "Resources": {
+  "ApiFunctionServiceRole52B9747B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistComputeStack/ApiFunction/ServiceRole/Resource"
+   }
+  },
+  "ApiFunctionServiceRoleDefaultPolicy20A32B8D": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:Query",
+        "dynamodb:Scan"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "WaitlistStorageStack:ExportsOutputFnGetAttWaitlistTable9B05A3ACArn60C9593A"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "WaitlistStorageStack:ExportsOutputFnGetAttWaitlistTable9B05A3ACArn60C9593A"
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:PutObjectAcl",
+        "s3:ListBucket"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::ImportValue": "WaitlistStorageStack:ExportsOutputFnGetAttAssetsBucket5CB76180ArnBF60D959"
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::ImportValue": "WaitlistStorageStack:ExportsOutputFnGetAttAssetsBucket5CB76180ArnBF60D959"
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "cognito-idp:InitiateAuth",
+        "cognito-idp:GetUser"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ApiFunctionServiceRoleDefaultPolicy20A32B8D",
+    "Roles": [
+     {
+      "Ref": "ApiFunctionServiceRole52B9747B"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistComputeStack/ApiFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ApiFunctionCE271BD4": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-653268860643-us-east-1",
+     "S3Key": "4a26ef3834070299ab9c66106c0829909fa884a65990650e0e8423e88b616ea9.zip"
+    },
+    "Environment": {
+     "Variables": {
+      "TABLE_NAME": {
+       "Fn::ImportValue": "WaitlistStorageStack:ExportsOutputRefWaitlistTable9B05A3ACC671715E"
+      },
+      "ASSETS_BUCKET": {
+       "Fn::ImportValue": "WaitlistStorageStack:ExportsOutputRefAssetsBucket5CB761808BF2E271"
+      },
+      "JWT_SECRET": "your-jwt-secret-key-change-in-production",
+      "ADMIN_EMAIL": "admin@waitlist.com",
+      "ADMIN_PASSWORD_HASH": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+      "COGNITO_USER_POOL_ID": {
+       "Fn::ImportValue": "WaitlistCognitoStack:ExportsOutputRefWaitlistUserPool659366D6164C46F5"
+      },
+      "COGNITO_CLIENT_ID": {
+       "Fn::ImportValue": "WaitlistCognitoStack:ExportsOutputRefWaitlistUserPoolClient3A9EAF6FBBC1D941"
+      }
+     }
+    },
+    "Handler": "index.handler",
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "ApiFunctionServiceRole52B9747B",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "ApiFunctionServiceRoleDefaultPolicy20A32B8D",
+    "ApiFunctionServiceRole52B9747B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WaitlistComputeStack/ApiFunction/Resource",
+    "aws:asset:path": "asset.4a26ef3834070299ab9c66106c0829909fa884a65990650e0e8423e88b616ea9",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zWOQQqDMBBFz9L9ONV4gip0WYoeQMYYZTQm4CSVIt69qHT1/l/8x1eoVIrpjVZJdDclllvc6kB6Alql2SzNbUeN850ZBV8nntHpwN4B04xb5a2Bsncn396y/h71SjtI3pCICYKPAyA5FlFPJhQkBi49lr37S3eojPi4aAPnoA40sBt2OC7gKPePUpjlmN1GYU6W6ALPBquLPwsPUmXPAAAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistComputeStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "ExportsOutputFnGetAttApiFunctionCE271BD4Arn4729005E": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ApiFunctionCE271BD4",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "WaitlistComputeStack:ExportsOutputFnGetAttApiFunctionCE271BD4Arn4729005E"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

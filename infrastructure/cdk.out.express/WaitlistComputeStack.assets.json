@@ -1,0 +1,36 @@
+{
+  "version": "48.0.0",
+  "files": {
+    "4a26ef3834070299ab9c66106c0829909fa884a65990650e0e8423e88b616ea9": {
+      "displayName": "ApiFunction/Code",
+      "source": {
+        "path": "asset.4a26ef3834070299ab9c66106c0829909fa884a65990650e0e8423e88b616ea9",
+        "packaging": "zip"
+      },
+      "destinations": {
+        "653268860643-us-east-1-0e1d9e6b": {
+          "bucketName": "cdk-hnb659fds-assets-653268860643-us-east-1",
+          "objectKey": "4a26ef3834070299ab9c66106c0829909fa884a65990650e0e8423e88b616ea9.zip",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-file-publishing-role-653268860643-us-east-1"
+        }
+      }
+    },
+    "d9d07521bef7f25a9f824b18b49b474c6389f1d40dd4a361381f3159dacf3821": {
+      "displayName": "WaitlistComputeStack Template",
+      "source": {
+        "path": "WaitlistComputeStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "653268860643-us-east-1-be98b5fb": {
+          "bucketName": "cdk-hnb659fds-assets-653268860643-us-east-1",
+          "objectKey": "d9d07521bef7f25a9f824b18b49b474c6389f1d40dd4a361381f3159dacf3821.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-file-publishing-role-653268860643-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

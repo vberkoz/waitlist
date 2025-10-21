@@ -1,0 +1,528 @@
+{
+ "Resources": {
+  "WaitlistApi1E94F1B5": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Waitlist Management API",
+    "Name": "Waitlist API"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Resource"
+   }
+  },
+  "WaitlistApiCloudWatchRoleAFE72C8B": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/CloudWatchRole/Resource"
+   }
+  },
+  "WaitlistApiAccountF016DFBE": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "WaitlistApiCloudWatchRoleAFE72C8B",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "WaitlistApi1E94F1B5"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Account"
+   }
+  },
+  "WaitlistApiDeployment75F86F21f059acfed6f6fa96d01c2496c4773353": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Waitlist Management API",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "DependsOn": [
+    "WaitlistApiproxyANY2ADF1326",
+    "WaitlistApiproxyOPTIONSA014A739",
+    "WaitlistApiproxy2EB0D0A3",
+    "WaitlistApiANYA392DA26",
+    "WaitlistApiOPTIONS80B3ABA9"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
+   }
+  },
+  "WaitlistApiDeploymentStageprod514D1053": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "DeploymentId": {
+     "Ref": "WaitlistApiDeployment75F86F21f059acfed6f6fa96d01c2496c4773353"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": true,
+      "HttpMethod": "*",
+      "LoggingLevel": "INFO",
+      "MetricsEnabled": true,
+      "ResourcePath": "/*",
+      "ThrottlingBurstLimit": 200,
+      "ThrottlingRateLimit": 100
+     }
+    ],
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    },
+    "StageName": "prod"
+   },
+   "DependsOn": [
+    "WaitlistApiAccountF016DFBE"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/DeploymentStage.prod/Resource"
+   }
+  },
+  "WaitlistApiOPTIONS80B3ABA9": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "WaitlistApi1E94F1B5",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApiproxy2EB0D0A3": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "WaitlistApi1E94F1B5",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "{proxy+}",
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/{proxy+}/Resource"
+   }
+  },
+  "WaitlistApiproxyOPTIONSA014A739": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "WaitlistApiproxy2EB0D0A3"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/{proxy+}/OPTIONS/Resource"
+   }
+  },
+  "WaitlistApiproxyANYApiPermissionWaitlistApiStackWaitlistApiA77B2C03ANYproxy73D21F30": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttApiFunctionCE271BD4Arn4729005E"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/",
+       {
+        "Ref": "WaitlistApiDeploymentStageprod514D1053"
+       },
+       "/*/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/{proxy+}/ANY/ApiPermission.WaitlistApiStackWaitlistApiA77B2C03.ANY..{proxy+}"
+   }
+  },
+  "WaitlistApiproxyANYApiPermissionTestWaitlistApiStackWaitlistApiA77B2C03ANYproxy52970CAA": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttApiFunctionCE271BD4Arn4729005E"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:us-east-1:653268860643:",
+       {
+        "Ref": "WaitlistApi1E94F1B5"
+       },
+       "/test-invoke-stage/*/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/{proxy+}/ANY/ApiPermission.Test.WaitlistApiStackWaitlistApiA77B2C03.ANY..{proxy+}"
+   }
+  },
+  "WaitlistApiproxyANY2ADF1326": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "ANY",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:us-east-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "WaitlistComputeStack:ExportsOutputFnGetAttApiFunctionCE271BD4Arn4729005E"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "WaitlistApiproxy2EB0D0A3"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/{proxy+}/ANY/Resource"
+   }
+  },
+  "WaitlistApiANYA392DA26": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "ANY",
+    "Integration": {
+     "Type": "MOCK"
+    },
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "WaitlistApi1E94F1B5",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/WaitlistApi/Default/ANY/Resource"
+   }
+  },
+  "ApiCertificate1D5B2B3B": {
+   "Type": "AWS::CertificateManager::Certificate",
+   "Properties": {
+    "DomainName": "*.waitlist.vberkoz.com",
+    "DomainValidationOptions": [
+     {
+      "DomainName": "waitlist.vberkoz.com",
+      "HostedZoneId": "Z0938756375Q47T4PTZG2"
+     }
+    ],
+    "SubjectAlternativeNames": [
+     "waitlist.vberkoz.com"
+    ],
+    "Tags": [
+     {
+      "Key": "Name",
+      "Value": "WaitlistApiStack/ApiCertificate"
+     }
+    ],
+    "ValidationMethod": "DNS"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/ApiCertificate/Resource"
+   }
+  },
+  "CustomDomain21DD44B6": {
+   "Type": "AWS::ApiGateway::DomainName",
+   "Properties": {
+    "DomainName": "project.waitlist.vberkoz.com",
+    "EndpointConfiguration": {
+     "Types": [
+      "REGIONAL"
+     ]
+    },
+    "RegionalCertificateArn": {
+     "Ref": "ApiCertificate1D5B2B3B"
+    },
+    "SecurityPolicy": "TLS_1_2"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/CustomDomain/Resource"
+   }
+  },
+  "BasePathMappingF35F2767": {
+   "Type": "AWS::ApiGateway::BasePathMapping",
+   "Properties": {
+    "DomainName": {
+     "Ref": "CustomDomain21DD44B6"
+    },
+    "RestApiId": {
+     "Ref": "WaitlistApi1E94F1B5"
+    },
+    "Stage": {
+     "Ref": "WaitlistApiDeploymentStageprod514D1053"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/BasePathMapping/Resource"
+   }
+  },
+  "ApiAliasRecordBCE933A3": {
+   "Type": "AWS::Route53::RecordSet",
+   "Properties": {
+    "AliasTarget": {
+     "DNSName": {
+      "Fn::GetAtt": [
+       "CustomDomain21DD44B6",
+       "RegionalDomainName"
+      ]
+     },
+     "HostedZoneId": {
+      "Fn::GetAtt": [
+       "CustomDomain21DD44B6",
+       "RegionalHostedZoneId"
+      ]
+     }
+    },
+    "HostedZoneId": "Z0938756375Q47T4PTZG2",
+    "Name": "project.waitlist.vberkoz.com.",
+    "Type": "A"
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/ApiAliasRecord/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/12P3W6DMAxGn6X3IWup9gCM3rZD8ACTGwx1S36UOGMI8e5TRqehXeV8x44T5zLP93K/gzFkqn1kA13l3DCoh4AxfMzgqAfGESY51xi4cCTKzmywUMpGw+KEbrCTRsPJblLD0GNyK9QYbPQK3yCgOCPfbJuKT6q8/Zp+W54vrXyyGshcQP/oTUqDKuDbGZwj06fqP7UIAi3n2g7rSDvgIgbQ1xZk2ZkKvaYQyBqh0DN1pIBRg4EevZzLP5dub+IivI2Mr0c5FzUq69v1x4ka5GUR203eI7vIizC2RXkPL595Lg9HedjdA1Hmo2HSKOv1/AZ1mdvRmAEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "WaitlistApiStack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "WaitlistApiEndpoint02AB4181": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "WaitlistApi1E94F1B5"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "WaitlistApiDeploymentStageprod514D1053"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Description": "API Gateway URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "WaitlistApi1E94F1B5"
+      },
+      ".execute-api.us-east-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "WaitlistApiDeploymentStageprod514D1053"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "CustomDomainUrl": {
+   "Description": "Custom Domain URL",
+   "Value": "https://project.waitlist.vberkoz.com"
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
