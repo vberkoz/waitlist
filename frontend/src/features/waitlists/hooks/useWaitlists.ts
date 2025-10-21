@@ -16,6 +16,7 @@ interface Waitlist {
   description: string
   primaryColor: string
   logo?: string
+  publicUrl: string
   ownerEmail: string
   subscriberCount: number
   createdAt: string
@@ -45,7 +46,7 @@ export function useCreateWaitlist() {
   const queryClient = useQueryClient()
   
   return useMutation({
-    mutationFn: async (data: CreateWaitlistData): Promise<Waitlist> => {
+    mutationFn: async (data: CreateWaitlistData) => {
       const token = localStorage.getItem('auth_token')
       const response = await fetch(`${API_BASE_URL}/waitlists`, {
         method: 'POST',
@@ -55,9 +56,11 @@ export function useCreateWaitlist() {
         },
         body: JSON.stringify(data)
       })
-      if (!response.ok) throw new Error('Failed to create waitlist')
       const result = await response.json()
-      return result.waitlist
+      if (!response.ok) {
+        throw { response: { data: result } }
+      }
+      return result
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['waitlists'] })
