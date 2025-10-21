@@ -24,6 +24,7 @@ export default function SubscribersPage() {
   }, [search])
 
   const { data, isLoading, error } = useSubscribers({
+    waitlistId: undefined, // Show all subscribers
     search: debouncedSearch || undefined,
     sortOrder
   })
@@ -31,7 +32,7 @@ export default function SubscribersPage() {
   const exportMutation = useExportSubscribers()
 
   const handleExport = () => {
-    exportMutation.mutate('test-waitlist-123', {
+    exportMutation.mutate('all', {
       onSuccess: (data) => {
         toast.success(`Exported ${data.count} subscribers successfully`)
       },
@@ -94,7 +95,7 @@ export default function SubscribersPage() {
   const subscribers = data?.subscribers || []
 
   return (
-    <div className="min-h-0 flex-1 space-y-6 p-6 max-w-full overflow-hidden">
+    <div className="space-y-6 max-w-full">
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>

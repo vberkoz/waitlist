@@ -2,31 +2,21 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
-import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import { useState, useEffect } from 'react'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from '@/components/ui/sidebar'
 import { Home, Users, Settings, List } from 'lucide-react'
-import { useCurrentUser, useLogout } from '@/features/auth/hooks/useAuth'
+import { useLogout } from '@/features/auth/hooks/useAuth'
 
-export default function Layout() {
+function LayoutContent() {
   const location = useLocation()
   const navigate = useNavigate()
-  const [open, setOpen] = useState(false)
-  const { data: user } = useCurrentUser()
   const logout = useLogout()
+  const { setOpenMobile } = useSidebar()
 
   const isActive = (path: string) => location.pathname === path
 
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
-      }
-    }
-    document.addEventListener('keydown', down)
-    return () => document.removeEventListener('keydown', down)
-  }, [])
+  const handleMenuClick = () => {
+    setOpenMobile(false)
+  }
 
   const menuItems = [
     { title: 'Dashboard', url: '/', icon: Home },
@@ -36,8 +26,7 @@ export default function Layout() {
   ]
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+    <div className="min-h-screen flex w-full">
         <Sidebar className="border-r">
           <SidebarHeader>
             <div className="flex items-center gap-2 px-4 py-2">
@@ -52,7 +41,7 @@ export default function Layout() {
                   {menuItems.map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                        <Link to={item.url}>
+                        <Link to={item.url} onClick={handleMenuClick}>
                           <item.icon className="h-4 w-4" />
                           <span>{item.title}</span>
                         </Link>
@@ -68,14 +57,14 @@ export default function Layout() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="w-full justify-start">
                   <Avatar className="h-6 w-6">
-                    <AvatarFallback>{user?.email?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
+                    <AvatarFallback>A</AvatarFallback>
                   </Avatar>
-                  <span className="ml-2">{user?.email || 'User'}</span>
+                  <span className="ml-2">admin@waitlist.com</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem disabled>
-                  {user?.email}
+                  admin@waitlist.com
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => { logout(); navigate('/login') }}>
                   Logout
@@ -84,47 +73,23 @@ export default function Layout() {
             </DropdownMenu>
           </SidebarFooter>
         </Sidebar>
-        <div className="flex-1 flex flex-col">
-          <header className="bg-background border-b px-4 py-3 flex items-center gap-4">
-            <SidebarTrigger className="md:hidden" />
-            <Button
-              variant="outline"
-              className="text-sm text-muted-foreground ml-auto"
-              onClick={() => setOpen(true)}
-            >
-              Search... <kbd className="ml-2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">⌘K</kbd>
-            </Button>
+        <div className="flex-1 flex flex-col min-w-0">
+          <header className="flex items-center gap-2 border-b p-4 md:hidden">
+            <SidebarTrigger />
+            <h1 className="text-lg font-semibold">Waitlist Platform</h1>
           </header>
-          <main className="flex-1 p-4 md:p-8">
+          <main className="flex-1 p-4 md:p-8 overflow-auto">
             <Outlet />
           </main>
         </div>
-      </div>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Navigation">
-            <CommandItem onSelect={() => { window.location.href = '/'; setOpen(false) }}>
-              Dashboard
-            </CommandItem>
-            <CommandItem onSelect={() => { window.location.href = '/waitlists'; setOpen(false) }}>
-              Waitlists
-            </CommandItem>
-            <CommandItem onSelect={() => { window.location.href = '/subscribers'; setOpen(false) }}>
-              Subscribers
-            </CommandItem>
-            <CommandItem onSelect={() => { window.location.href = '/settings'; setOpen(false) }}>
-              Settings
-            </CommandItem>
-          </CommandGroup>
-          <CommandGroup heading="Actions">
-            <CommandItem onSelect={() => { window.location.href = '/waitlists/create'; setOpen(false) }}>
-              Create New Waitlist
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
-      </CommandDialog>
+    </div>
+  )
+}
+
+export default function Layout() {
+  return (
+    <SidebarProvider>
+      <LayoutContent />
     </SidebarProvider>
   )
 }
