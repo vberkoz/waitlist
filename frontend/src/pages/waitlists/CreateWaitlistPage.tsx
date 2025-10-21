@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 
 const formSchema = z.object({
   name: z.string().min(2, 'Project name must be at least 2 characters'),
+  slug: z.string().min(2, 'Slug must be at least 2 characters').regex(/^[a-z0-9]+$/, 'Slug must be lowercase letters and numbers only'),
   description: z.string().min(10, 'Description must be at least 10 characters'),
   primaryColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/i, 'Invalid color format'),
   logo: z.any().optional()
@@ -27,6 +28,7 @@ export default function CreateWaitlistPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: 'Product Launch 2024',
+      slug: 'productlaunch2024',
       description: 'Be the first to know when we launch our revolutionary new product. Join our waitlist and get exclusive early access.',
       primaryColor: '#3b82f6'
     }
@@ -39,7 +41,12 @@ export default function CreateWaitlistPage() {
     if (isValid) setStep(2)
   }
 
-  const generateStaticHTML = (data: FormData): string => {
+  const generateStaticHTML = (data: FormData, waitlistId: string, apiKey: string): string => {
+    const API_URL = import.meta.env.VITE_API_URL
+    // Escape the values to prevent template literal issues
+    const escapedApiKey = apiKey.replace(/`/g, '\\`')
+    const escapedWaitlistId = waitlistId.replace(/`/g, '\\`')
+    const escapedApiUrl = API_URL.replace(/`/g, '\\`')
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,27 +80,61 @@ export default function CreateWaitlistPage() {
     <div class="success" id="success">✓ Thank you for joining!</div>
   </div>
   <script>
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
       e.preventDefault();
       const email = document.getElementById('email').value;
-      // Add your API endpoint here
-      console.log('Email submitted:', email);
-      document.getElementById('success').style.display = 'block';
-      e.target.reset();
+      const button = e.target.querySelector('button');
+      button.disabled = true;
+      button.textContent = 'Joining...';
+      
+      try {
+        const response = await fetch('${escapedApiUrl}/subscribers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-API-Key': '${escapedApiKey}'
+          },
+          body: JSON.stringify({ 
+            email: email,
+            waitlistId: '${escapedWaitlistId}'
+          })
+        });
+        
+        if (response.ok) {
+          document.getElementById('success').style.display = 'block';
+          e.target.reset();
+        } else {
+          const error = await response.json();
+          alert(error.error || 'Failed to join waitlist');
+          button.disabled = false;
+          button.textContent = 'Join Waitlist';
+        }
+      } catch (error) {
+        alert('Failed to join waitlist. Please try again.');
+        button.disabled = false;
+        button.textContent = 'Join Waitlist';
+      }
     }
   </script>
 </body>
 </html>`
   }
 
-  const downloadStaticHTML = () => {
+  const downloadStaticHTML = async (waitlistId: string, apiKey: string, slug: string) => {
     const data = form.getValues()
-    const html = generateStaticHTML(data)
-    const blob = new Blob([html], { type: 'text/html' })
+    const html = generateStaticHTML(data, waitlistId, apiKey)
+    
+    // Use JSZip to create a zip file with folder structure
+    const JSZip = (await import('jszip')).default
+    const zip = new JSZip()
+    const folder = zip.folder(slug)
+    folder?.file('index.html', html)
+    
+    const blob = await zip.generateAsync({ type: 'blob' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${data.name.toLowerCase().replace(/\s+/g, '-')}-waitlist.html`
+    a.download = `${slug}.zip`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -102,15 +143,17 @@ export default function CreateWaitlistPage() {
   }
 
   const onSubmit = (data: FormData) => {
-    if (hostingOption === 'export') {
-      downloadStaticHTML()
-      return
-    }
     createMutation.mutate(data, {
       onSuccess: (response) => {
-        const url = response.waitlist.publicUrl
-        setPublishedUrl(url)
-        toast.success('Waitlist published successfully!')
+        const { id: waitlistId, apiKey, slug } = response.waitlist
+        
+        if (hostingOption === 'export') {
+          downloadStaticHTML(waitlistId, apiKey, slug)
+        } else {
+          const url = response.waitlist.publicUrl
+          setPublishedUrl(url)
+          toast.success('Waitlist published successfully!')
+        }
       },
       onError: (error: any) => {
         const message = error?.response?.data?.error || 'Failed to create waitlist'
@@ -144,7 +187,25 @@ export default function CreateWaitlistPage() {
                   <FormItem>
                     <FormLabel>Project Name *</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} onChange={(e) => {
+                        field.onChange(e)
+                        const slug = e.target.value.toLowerCase().replace(/[^a-z0-9]/g, '')
+                        form.setValue('slug', slug)
+                      }} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="slug"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Slug *</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="productlaunch2024" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

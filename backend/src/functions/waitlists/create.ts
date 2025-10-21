@@ -3,6 +3,7 @@ import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb'
 import { z } from 'zod'
 import jwt from 'jsonwebtoken'
+import { generateApiKey } from '../../lib/apikey'
 
 const client = new DynamoDBClient({})
 const docClient = DynamoDBDocumentClient.from(client)
@@ -11,6 +12,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret-key-change-in-prod
 
 const createWaitlistSchema = z.object({
   name: z.string().min(2),
+  slug: z.string().min(2).regex(/^[a-z0-9]+$/),
   description: z.string().min(10),
   primaryColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/i),
   logo: z.string().optional()
@@ -57,30 +59,43 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     const body = createWaitlistSchema.parse(JSON.parse(event.body))
     
-    // Generate slug from waitlist name only
-    const slug = body.name.replace(/[^a-z0-9]/gi, '').toLowerCase()
+    // Check and generate unique slug
+    let slug = body.slug
+    let isUnique = false
+    let attempts = 0
     
-    // Check if slug already exists
-    const existingCheck = await docClient.send(new ScanCommand({
-      TableName: TABLE_NAME,
-      FilterExpression: 'slug = :slug AND SK = :sk',
-      ExpressionAttributeValues: {
-        ':slug': slug,
-        ':sk': 'WAITLIST'
+    while (!isUnique && attempts < 10) {
+      const existingCheck = await docClient.send(new ScanCommand({
+        TableName: TABLE_NAME,
+        FilterExpression: 'slug = :slug AND SK = :sk',
+        ExpressionAttributeValues: {
+          ':slug': slug,
+          ':sk': 'WAITLIST'
+        }
+      }))
+      
+      if (!existingCheck.Items || existingCheck.Items.length === 0) {
+        isUnique = true
+      } else {
+        // Add 4 random chars
+        const randomChars = Math.random().toString(36).substring(2, 6)
+        slug = body.slug + randomChars
+        attempts++
       }
-    }))
+    }
     
-    if (existingCheck.Items && existingCheck.Items.length > 0) {
+    if (!isUnique) {
       return {
         statusCode: 409,
         headers: corsHeaders,
-        body: JSON.stringify({ error: 'A waitlist with this name already exists. Please choose a different name.' })
+        body: JSON.stringify({ error: 'Unable to generate unique slug. Please try a different name.' })
       }
     }
     
     const waitlistId = `waitlist_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const now = new Date().toISOString()
     const publicUrl = `https://project.waitlist.vberkoz.com/${slug}`
+    const { key: apiKey, hash: keyHash, prefix: keyPrefix } = generateApiKey()
 
     const waitlist = {
       PK: waitlistId,
@@ -100,15 +115,35 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
       updatedAt: now
     }
 
+    const apiKeyRecord = {
+      PK: `APIKEY#${keyPrefix}`,
+      SK: `APIKEY#${keyPrefix}`,
+      keyHash,
+      keyPrefix,
+      waitlistId,
+      isActive: true,
+      createdAt: now
+    }
+
     await docClient.send(new PutCommand({
       TableName: TABLE_NAME,
       Item: waitlist
     }))
 
+    await docClient.send(new PutCommand({
+      TableName: TABLE_NAME,
+      Item: apiKeyRecord
+    }))
+
     return {
       statusCode: 201,
       headers: corsHeaders,
-      body: JSON.stringify({ waitlist })
+      body: JSON.stringify({ 
+        waitlist: {
+          ...waitlist,
+          apiKey
+        }
+      })
     }
   } catch (error) {
     console.error('Create waitlist error:', error)
