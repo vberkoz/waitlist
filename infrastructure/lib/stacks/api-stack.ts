@@ -1,14 +1,20 @@
 import * as cdk from 'aws-cdk-lib'
 import * as apigateway from 'aws-cdk-lib/aws-apigateway'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
+import * as acm from 'aws-cdk-lib/aws-certificatemanager'
+import * as route53 from 'aws-cdk-lib/aws-route53'
+import * as route53targets from 'aws-cdk-lib/aws-route53-targets'
 import { Construct } from 'constructs'
 
 interface ApiStackProps extends cdk.StackProps {
   functions: {
     createWaitlist: lambda.Function
     listWaitlists: lambda.Function
+    getWaitlist: lambda.Function
+    deleteWaitlist: lambda.Function
     createSubscriber: lambda.Function
     listSubscribers: lambda.Function
+    deleteSubscriber: lambda.Function
     exportSubscribers: lambda.Function
     createApiKey: lambda.Function
     validateApiKey: lambda.Function
@@ -38,15 +44,8 @@ export class ApiStack extends cdk.Stack {
       },
       defaultCorsPreflightOptions: {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
-        allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        allowHeaders: [
-          'Content-Type',
-          'X-Amz-Date',
-          'Authorization',
-          'X-Api-Key',
-          'X-Amz-Security-Token'
-        ],
-        allowCredentials: true,
+        allowMethods: apigateway.Cors.ALL_METHODS,
+        allowHeaders: apigateway.Cors.DEFAULT_HEADERS,
         maxAge: cdk.Duration.hours(1)
       }
     })
@@ -66,6 +65,16 @@ export class ApiStack extends cdk.Stack {
       ]
     })
 
+    const waitlistById = waitlists.addResource('{id}')
+    waitlistById.addMethod('DELETE', new apigateway.LambdaIntegration(props.functions.deleteWaitlist), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '404' },
+        { statusCode: '403' },
+        { statusCode: '500' }
+      ]
+    })
+
     const subscribers = this.api.root.addResource('subscribers')
     subscribers.addMethod('POST', new apigateway.LambdaIntegration(props.functions.createSubscriber), {
       methodResponses: [
@@ -77,6 +86,15 @@ export class ApiStack extends cdk.Stack {
     subscribers.addMethod('GET', new apigateway.LambdaIntegration(props.functions.listSubscribers), {
       methodResponses: [
         { statusCode: '200' },
+        { statusCode: '500' }
+      ]
+    })
+
+    const subscriberById = subscribers.addResource('{id}')
+    subscriberById.addMethod('DELETE', new apigateway.LambdaIntegration(props.functions.deleteSubscriber), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '404' },
         { statusCode: '500' }
       ]
     })
@@ -144,9 +162,54 @@ export class ApiStack extends cdk.Stack {
       ]
     })
 
+    const waitlistSlug = this.api.root.addResource('{slug}')
+    waitlistSlug.addMethod('GET', new apigateway.LambdaIntegration(props.functions.getWaitlist), {
+      methodResponses: [
+        { statusCode: '200' },
+        { statusCode: '404' },
+        { statusCode: '500' }
+      ]
+    })
+
+    const hostedZone = route53.HostedZone.fromLookup(this, 'HostedZone', {
+      domainName: 'vberkoz.com'
+    })
+
+    const certificate = new acm.Certificate(this, 'ApiCertificate', {
+      domainName: '*.waitlist.vberkoz.com',
+      subjectAlternativeNames: ['waitlist.vberkoz.com'],
+      validation: acm.CertificateValidation.fromDns(hostedZone)
+    })
+
+    const customDomain = new apigateway.DomainName(this, 'CustomDomain', {
+      domainName: 'project.waitlist.vberkoz.com',
+      certificate,
+      endpointType: apigateway.EndpointType.REGIONAL,
+      securityPolicy: apigateway.SecurityPolicy.TLS_1_2
+    })
+
+    new apigateway.BasePathMapping(this, 'BasePathMapping', {
+      domainName: customDomain,
+      restApi: this.api,
+      stage: this.api.deploymentStage
+    })
+
+    new route53.ARecord(this, 'ApiAliasRecord', {
+      zone: hostedZone,
+      recordName: 'project.waitlist',
+      target: route53.RecordTarget.fromAlias(
+        new route53targets.ApiGatewayDomain(customDomain)
+      )
+    })
+
     new cdk.CfnOutput(this, 'ApiUrl', {
       value: this.api.url,
       description: 'API Gateway URL'
+    })
+
+    new cdk.CfnOutput(this, 'CustomDomainUrl', {
+      value: `https://project.waitlist.vberkoz.com`,
+      description: 'Custom Domain URL'
     })
   }
 }

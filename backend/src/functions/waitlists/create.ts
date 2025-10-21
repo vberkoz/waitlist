@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
-import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { DynamoDBDocumentClient, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb'
 import { z } from 'zod'
 import jwt from 'jsonwebtoken'
 
@@ -16,14 +16,20 @@ const createWaitlistSchema = z.object({
   logo: z.string().optional()
 })
 
+const corsHeaders = {
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+  'Access-Control-Allow-Methods': 'POST,OPTIONS'
+}
+
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
-    // Verify authentication
     const authHeader = event.headers.Authorization || event.headers.authorization
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return {
         statusCode: 401,
-        headers: { 'Content-Type': 'application/json' },
+        headers: corsHeaders,
         body: JSON.stringify({ error: 'Unauthorized' })
       }
     }
@@ -36,7 +42,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     } catch {
       return {
         statusCode: 401,
-        headers: { 'Content-Type': 'application/json' },
+        headers: corsHeaders,
         body: JSON.stringify({ error: 'Invalid token' })
       }
     }
@@ -44,14 +50,37 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     if (!event.body) {
       return {
         statusCode: 400,
-        headers: { 'Content-Type': 'application/json' },
+        headers: corsHeaders,
         body: JSON.stringify({ error: 'Request body is required' })
       }
     }
 
     const body = createWaitlistSchema.parse(JSON.parse(event.body))
+    
+    // Generate slug from waitlist name only
+    const slug = body.name.replace(/[^a-z0-9]/gi, '').toLowerCase()
+    
+    // Check if slug already exists
+    const existingCheck = await docClient.send(new ScanCommand({
+      TableName: TABLE_NAME,
+      FilterExpression: 'slug = :slug AND SK = :sk',
+      ExpressionAttributeValues: {
+        ':slug': slug,
+        ':sk': 'WAITLIST'
+      }
+    }))
+    
+    if (existingCheck.Items && existingCheck.Items.length > 0) {
+      return {
+        statusCode: 409,
+        headers: corsHeaders,
+        body: JSON.stringify({ error: 'A waitlist with this name already exists. Please choose a different name.' })
+      }
+    }
+    
     const waitlistId = `waitlist_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const now = new Date().toISOString()
+    const publicUrl = `https://project.waitlist.vberkoz.com/${slug}`
 
     const waitlist = {
       PK: waitlistId,
@@ -63,6 +92,8 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
       description: body.description,
       primaryColor: body.primaryColor,
       logo: body.logo,
+      slug,
+      publicUrl,
       ownerEmail: userEmail,
       subscriberCount: 0,
       createdAt: now,
@@ -76,14 +107,14 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     return {
       statusCode: 201,
-      headers: { 'Content-Type': 'application/json' },
+      headers: corsHeaders,
       body: JSON.stringify({ waitlist })
     }
   } catch (error) {
     console.error('Create waitlist error:', error)
     return {
       statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: corsHeaders,
       body: JSON.stringify({ error: 'Internal server error' })
     }
   }
