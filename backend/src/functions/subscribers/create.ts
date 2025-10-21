@@ -10,41 +10,44 @@ const TABLE_NAME = process.env.TABLE_NAME!
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
-    // Validate API key
-    const apiKey = event.headers['x-api-key'] || event.headers['X-API-Key']
-    
-    if (!apiKey) {
-      return createResponse(401, { error: 'API key is required' })
-    }
-
-    if (!validateApiKeyFormat(apiKey)) {
-      return createResponse(401, { error: 'Invalid API key format' })
-    }
-
-    const keyHash = hashApiKey(apiKey)
-    const { Items } = await dynamodb.send(new ScanCommand({
-      TableName: TABLE_NAME,
-      FilterExpression: 'keyHash = :hash AND begins_with(PK, :pk)',
-      ExpressionAttributeValues: {
-        ':hash': keyHash,
-        ':pk': 'APIKEY#'
-      }
-    }))
-
-    if (!Items || Items.length === 0 || !Items[0].isActive) {
-      return createResponse(401, { error: 'Invalid or inactive API key' })
-    }
-
-    const validatedWaitlistId = Items[0].waitlistId
-
     if (!event.body) {
       return createResponse(400, { error: 'Request body is required' })
     }
 
     const body = JSON.parse(event.body)
+    
+    // Check if API key is provided (for API usage)
+    const apiKey = event.headers['x-api-key'] || event.headers['X-API-Key']
+    let waitlistId = body.waitlistId
+    
+    if (apiKey) {
+      // Validate API key and get waitlistId from it
+      if (!validateApiKeyFormat(apiKey)) {
+        return createResponse(401, { error: 'Invalid API key format' })
+      }
+
+      const keyHash = hashApiKey(apiKey)
+      const { Items } = await dynamodb.send(new ScanCommand({
+        TableName: TABLE_NAME,
+        FilterExpression: 'keyHash = :hash AND begins_with(PK, :pk)',
+        ExpressionAttributeValues: {
+          ':hash': keyHash,
+          ':pk': 'APIKEY#'
+        }
+      }))
+
+      if (!Items || Items.length === 0 || !Items[0].isActive) {
+        return createResponse(401, { error: 'Invalid or inactive API key' })
+      }
+
+      waitlistId = Items[0].waitlistId
+    } else if (!waitlistId) {
+      return createResponse(400, { error: 'waitlistId is required' })
+    }
+
     const validation = createSubscriberSchema.safeParse({
       email: body.email,
-      waitlistId: validatedWaitlistId // Use waitlistId from API key
+      waitlistId
     })
     
     if (!validation.success) {
@@ -54,7 +57,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
       })
     }
 
-    const { email, waitlistId } = validation.data
+    const { email } = validation.data
     const subscriberId = generateId()
     const now = new Date().toISOString()
 
