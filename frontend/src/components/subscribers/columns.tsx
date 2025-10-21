@@ -1,7 +1,11 @@
 "use client"
 
+import { useState } from 'react'
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
+import { useDeleteSubscriber } from '@/features/subscribers/hooks/useDeleteSubscriber'
+import { toast } from 'sonner'
 
 export type Subscriber = {
   subscriberId: string
@@ -54,17 +58,49 @@ export const columns: ColumnDef<Subscriber>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
+      const subscriber = row.original
+      const deleteMutation = useDeleteSubscriber()
+      const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+
+      const handleDelete = () => {
+        deleteMutation.mutate(subscriber.subscriberId, {
+          onSuccess: () => {
+            toast.success('Subscriber deleted successfully')
+            setShowDeleteDialog(false)
+          },
+          onError: () => {
+            toast.error('Failed to delete subscriber')
+          }
+        })
+      }
+
       return (
-        <Button 
-          variant="destructive" 
-          size="sm"
-          onClick={() => {
-            // TODO: Implement delete functionality
-            console.log("Delete subscriber:", row.original.subscriberId)
-          }}
-        >
-          Delete
-        </Button>
+        <>
+          <Button 
+            variant="destructive" 
+            size="sm"
+            onClick={() => setShowDeleteDialog(true)}
+          >
+            Delete
+          </Button>
+
+          <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Subscriber</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete "{subscriber.email}"? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleDelete} className="bg-destructive text-white hover:bg-destructive/90">
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </>
       )
     },
   },

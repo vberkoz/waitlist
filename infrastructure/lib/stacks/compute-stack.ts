@@ -18,8 +18,11 @@ export class ComputeStack extends cdk.Stack {
   public readonly functions: {
     createWaitlist: lambda.Function
     listWaitlists: lambda.Function
+    getWaitlist: lambda.Function
+    deleteWaitlist: lambda.Function
     createSubscriber: lambda.Function
     listSubscribers: lambda.Function
+    deleteSubscriber: lambda.Function
     exportSubscribers: lambda.Function
     createApiKey: lambda.Function
     validateApiKey: lambda.Function
@@ -53,6 +56,23 @@ export class ComputeStack extends cdk.Stack {
           JWT_SECRET: 'your-jwt-secret-key-change-in-production'
         }
       }),
+      getWaitlist: new NodejsFunction(this, 'GetWaitlistFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        entry: path.join(__dirname, '../../../backend/src/functions/public/get-waitlist.ts'),
+        handler: 'handler',
+        environment: {
+          TABLE_NAME: props.table.tableName
+        }
+      }),
+      deleteWaitlist: new NodejsFunction(this, 'DeleteWaitlistFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        entry: path.join(__dirname, '../../../backend/src/functions/waitlists/delete.ts'),
+        handler: 'handler',
+        environment: {
+          TABLE_NAME: props.table.tableName,
+          JWT_SECRET: 'your-jwt-secret-key-change-in-production'
+        }
+      }),
       createSubscriber: new NodejsFunction(this, 'CreateSubscriberFunction', {
         runtime: lambda.Runtime.NODEJS_20_X,
         entry: path.join(__dirname, '../../../backend/src/functions/subscribers/create.ts'),
@@ -69,6 +89,15 @@ export class ComputeStack extends cdk.Stack {
         environment: {
           TABLE_NAME: props.table.tableName,
           ASSETS_BUCKET: props.assetsBucket.bucketName
+        }
+      }),
+      deleteSubscriber: new NodejsFunction(this, 'DeleteSubscriberFunction', {
+        runtime: lambda.Runtime.NODEJS_20_X,
+        entry: path.join(__dirname, '../../../backend/src/functions/subscribers/delete.ts'),
+        handler: 'handler',
+        environment: {
+          TABLE_NAME: props.table.tableName,
+          JWT_SECRET: 'your-jwt-secret-key-change-in-production'
         }
       }),
       exportSubscribers: new NodejsFunction(this, 'ExportSubscribersFunction', {
@@ -134,7 +163,7 @@ export class ComputeStack extends cdk.Stack {
 
     this.functions.createWaitlist.addToRolePolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
-      actions: ['dynamodb:PutItem', 'dynamodb:GetItem'],
+      actions: ['dynamodb:PutItem', 'dynamodb:GetItem', 'dynamodb:Scan'],
       resources: [props.table.tableArn]
     }))
 
@@ -142,6 +171,24 @@ export class ComputeStack extends cdk.Stack {
       effect: iam.Effect.ALLOW,
       actions: ['dynamodb:Query', 'dynamodb:Scan'],
       resources: [props.table.tableArn, `${props.table.tableArn}/index/*`]
+    }))
+
+    this.functions.getWaitlist.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:Scan'],
+      resources: [props.table.tableArn]
+    }))
+
+    this.functions.deleteWaitlist.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:GetItem', 'dynamodb:DeleteItem'],
+      resources: [props.table.tableArn]
+    }))
+
+    this.functions.deleteSubscriber.addToRolePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: ['dynamodb:GetItem', 'dynamodb:DeleteItem'],
+      resources: [props.table.tableArn]
     }))
 
     this.functions.createSubscriber.addToRolePolicy(new iam.PolicyStatement({
