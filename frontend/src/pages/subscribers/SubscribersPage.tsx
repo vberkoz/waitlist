@@ -6,6 +6,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useSubscribers } from '@/features/subscribers/hooks/useSubscribers'
 import { useExportSubscribers } from '@/features/subscribers/hooks/useExportSubscribers'
+import { useWaitlists } from '@/features/waitlists/hooks/useWaitlists'
 import { DataTable } from '@/components/subscribers/data-table'
 import { columns } from '@/components/subscribers/columns'
 import { toast } from 'sonner'
@@ -13,6 +14,7 @@ import { toast } from 'sonner'
 export default function SubscribersPage() {
   const [search, setSearch] = useState('')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [waitlistFilter, setWaitlistFilter] = useState<string>('all')
   const [debouncedSearch, setDebouncedSearch] = useState('')
 
   // Debounce search input
@@ -23,8 +25,11 @@ export default function SubscribersPage() {
     return () => clearTimeout(timer)
   }, [search])
 
+  const { data: waitlistsData } = useWaitlists()
+  const waitlists = waitlistsData || []
+
   const { data, isLoading, error } = useSubscribers({
-    waitlistId: undefined, // Show all subscribers
+    waitlistId: waitlistFilter === 'all' ? undefined : waitlistFilter,
     search: debouncedSearch || undefined,
     sortOrder
   })
@@ -32,7 +37,7 @@ export default function SubscribersPage() {
   const exportMutation = useExportSubscribers()
 
   const handleExport = () => {
-    exportMutation.mutate('all', {
+    exportMutation.mutate(waitlistFilter === 'all' ? undefined : waitlistFilter, {
       onSuccess: (data) => {
         toast.success(`Exported ${data.count} subscribers successfully`)
       },
@@ -119,6 +124,19 @@ export default function SubscribersPage() {
             onChange={(e) => setSearch(e.target.value)}
           />
           <div className="flex gap-2 flex-shrink-0">
+            <Select value={waitlistFilter} onValueChange={setWaitlistFilter}>
+              <SelectTrigger className="w-full sm:w-40">
+                <SelectValue placeholder="All Waitlists" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Waitlists</SelectItem>
+                {waitlists.map((waitlist) => (
+                  <SelectItem key={waitlist.id} value={waitlist.id}>
+                    {waitlist.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={sortOrder} onValueChange={(value: 'asc' | 'desc') => setSortOrder(value)}>
               <SelectTrigger className="w-full sm:w-32">
                 <SelectValue />

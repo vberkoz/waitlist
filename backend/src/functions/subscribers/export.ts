@@ -1,5 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda'
-import { QueryCommand } from '@aws-sdk/lib-dynamodb'
+import { QueryCommand, ScanCommand } from '@aws-sdk/lib-dynamodb'
 import { PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { S3Client } from '@aws-sdk/client-s3'
@@ -12,20 +12,47 @@ const s3Client = new S3Client({})
 
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
-    const waitlistId = event.queryStringParameters?.waitlistId || 'test-waitlist-123'
+    const waitlistId = event.queryStringParameters?.waitlistId
 
-    // Query all subscribers for the waitlist
-    const result = await dynamodb.send(new QueryCommand({
-      TableName: TABLE_NAME,
-      IndexName: 'GSI1',
-      KeyConditionExpression: 'GSI1PK = :pk AND begins_with(GSI1SK, :sk)',
-      ExpressionAttributeValues: {
-        ':pk': `WAITLIST#${waitlistId}`,
-        ':sk': 'SUBSCRIBER#'
-      }
-    }))
+    let subscribers: any[] = []
+    let lastEvaluatedKey: any = undefined
 
-    const subscribers = result.Items || []
+    console.log('Export request - waitlistId:', waitlistId)
+
+    if (waitlistId && waitlistId !== 'all') {
+      // Query specific waitlist with pagination
+      do {
+        const result = await dynamodb.send(new QueryCommand({
+          TableName: TABLE_NAME,
+          IndexName: 'GSI1',
+          KeyConditionExpression: 'GSI1PK = :pk AND begins_with(GSI1SK, :sk)',
+          ExpressionAttributeValues: {
+            ':pk': `WAITLIST#${waitlistId}`,
+            ':sk': 'SUBSCRIBER#'
+          },
+          ExclusiveStartKey: lastEvaluatedKey
+        }))
+        subscribers.push(...(result.Items || []))
+        lastEvaluatedKey = result.LastEvaluatedKey
+      } while (lastEvaluatedKey)
+    } else {
+      // Scan all subscribers with pagination
+      do {
+        const result = await dynamodb.send(new ScanCommand({
+          TableName: TABLE_NAME,
+          FilterExpression: 'begins_with(PK, :pk)',
+          ExpressionAttributeValues: {
+            ':pk': 'SUBSCRIBER#'
+          },
+          ExclusiveStartKey: lastEvaluatedKey
+        }))
+        subscribers.push(...(result.Items || []))
+        lastEvaluatedKey = result.LastEvaluatedKey
+      } while (lastEvaluatedKey)
+    }
+
+    console.log('Total subscribers found:', subscribers.length)
+    console.log('Sample subscriber:', subscribers[0])
 
     // Generate CSV content
     const csvHeader = 'Email,Created At,Subscriber ID\n'

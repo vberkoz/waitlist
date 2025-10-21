@@ -26,5 +26,5 @@ const computeStack = new ComputeStack(app, 'WaitlistComputeStack', {
 
 new ApiStack(app, 'WaitlistApiStack', {
   env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
-  functions: computeStack.functions
+  apiFunction: computeStack.apiFunction
 })
