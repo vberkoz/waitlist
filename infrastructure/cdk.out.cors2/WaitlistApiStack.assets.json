@@ -1,0 +1,21 @@
+{
+  "version": "48.0.0",
+  "files": {
+    "0adeb30ccba4f2421703d0688c451101d4dd73de34bdb1757e346469755ee871": {
+      "displayName": "WaitlistApiStack Template",
+      "source": {
+        "path": "WaitlistApiStack.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "653268860643-us-east-1-38ef78d0": {
+          "bucketName": "cdk-hnb659fds-assets-653268860643-us-east-1",
+          "objectKey": "0adeb30ccba4f2421703d0688c451101d4dd73de34bdb1757e346469755ee871.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::653268860643:role/cdk-hnb659fds-file-publishing-role-653268860643-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

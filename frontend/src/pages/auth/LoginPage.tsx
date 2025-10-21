@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useLogin } from '@/features/auth/hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -24,12 +24,7 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema)
   })
 
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (token) {
-      navigate('/')
-    }
-  }, [navigate])
+  // Remove auto-redirect check
 
   const onSubmit = (data: LoginData) => {
     loginMutation.mutate(data, {

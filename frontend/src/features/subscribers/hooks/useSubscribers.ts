@@ -20,15 +20,16 @@ interface UseSubscribersOptions {
 }
 
 export function useSubscribers(options: UseSubscribersOptions = {}) {
-  const { waitlistId = 'test-waitlist-123', sortOrder = 'desc', search } = options
+  const { waitlistId, sortOrder = 'desc', search } = options
   
   return useQuery({
     queryKey: ['subscribers', waitlistId, sortOrder, search],
     queryFn: async (): Promise<SubscribersResponse> => {
-      const params = new URLSearchParams({
-        waitlistId,
-        sortOrder
-      })
+      const params = new URLSearchParams({ sortOrder })
+      
+      if (waitlistId) {
+        params.append('waitlistId', waitlistId)
+      }
       
       if (search) {
         params.append('search', search)

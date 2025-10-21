@@ -8,14 +8,20 @@ const docClient = DynamoDBDocumentClient.from(client)
 const TABLE_NAME = process.env.TABLE_NAME!
 const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret-key-change-in-production'
 
+const corsHeaders = {
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+  'Access-Control-Allow-Methods': 'GET,OPTIONS'
+}
+
 export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> {
   try {
-    // Verify authentication
     const authHeader = event.headers.Authorization || event.headers.authorization
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return {
         statusCode: 401,
-        headers: { 'Content-Type': 'application/json' },
+        headers: corsHeaders,
         body: JSON.stringify({ error: 'Unauthorized' })
       }
     }
@@ -28,7 +34,7 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     } catch {
       return {
         statusCode: 401,
-        headers: { 'Content-Type': 'application/json' },
+        headers: corsHeaders,
         body: JSON.stringify({ error: 'Invalid token' })
       }
     }
@@ -40,21 +46,21 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
       ExpressionAttributeValues: {
         ':userKey': `USER#${userEmail}`
       },
-      ScanIndexForward: false // Most recent first
+      ScanIndexForward: false
     }))
 
     const waitlists = result.Items?.filter(item => item.SK === 'WAITLIST') || []
 
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: corsHeaders,
       body: JSON.stringify({ waitlists })
     }
   } catch (error) {
     console.error('List waitlists error:', error)
     return {
       statusCode: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: corsHeaders,
       body: JSON.stringify({ error: 'Internal server error' })
     }
   }
