@@ -35,7 +35,8 @@ export function useSubscribers(options: UseSubscribersOptions = {}) {
         params.append('search', search)
       }
       
-      const response = await fetch(`https://jst5vtct18.execute-api.us-east-1.amazonaws.com/prod/subscribers?${params}`)
+      const API_BASE_URL = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${API_BASE_URL}/subscribers?${params}`)
       if (!response.ok) throw new Error('Failed to fetch subscribers')
       return response.json()
     }
