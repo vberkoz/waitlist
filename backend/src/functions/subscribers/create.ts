@@ -15,13 +15,17 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
     }
 
     const body = JSON.parse(event.body)
+    const waitlistId = body.waitlistId
+    
+    if (!waitlistId) {
+      return createResponse(400, { error: 'waitlistId is required' })
+    }
     
     // Check if API key is provided (for API usage)
     const apiKey = event.headers['x-api-key'] || event.headers['X-API-Key']
-    let waitlistId = body.waitlistId
     
     if (apiKey) {
-      // Validate API key and get waitlistId from it
+      // Validate API key
       if (!validateApiKeyFormat(apiKey)) {
         return createResponse(401, { error: 'Invalid API key format' })
       }
@@ -39,10 +43,11 @@ export async function handler(event: APIGatewayProxyEvent): Promise<APIGatewayPr
       if (!Items || Items.length === 0 || !Items[0].isActive) {
         return createResponse(401, { error: 'Invalid or inactive API key' })
       }
-
-      waitlistId = Items[0].waitlistId
-    } else if (!waitlistId) {
-      return createResponse(400, { error: 'waitlistId is required' })
+      
+      // Verify the API key belongs to this waitlist
+      if (Items[0].waitlistId !== waitlistId) {
+        return createResponse(403, { error: 'API key does not match waitlist' })
+      }
     }
 
     const validation = createSubscriberSchema.safeParse({
